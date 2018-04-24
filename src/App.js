@@ -43,7 +43,7 @@ class ModalSign extends React.Component {
       form1KeepLogged: false,
       form1Username: {
         value: '',
-        errMsg: ''
+        errors: [],
       },
       form1MasterPass: {
         value: '',
@@ -64,8 +64,8 @@ class ModalSign extends React.Component {
     this.handleChangePrivateKeyInput = this.handleChangePrivateKeyInput.bind(this);
 
     this.handleChangeKeepLoggedInput1 = this.handleChangeKeepLoggedInput1.bind(this);
-    this.handleChangeKeepLoggedInput2 = this.handleChangeKeepLoggedInput2.bind(this);    
-    
+    this.handleChangeKeepLoggedInput2 = this.handleChangeKeepLoggedInput2.bind(this);
+
     this.handleLogInSubmit1 = this.handleLogInSubmit1.bind(this);
     this.handleLogInSubmit2 = this.handleLogInSubmit2.bind(this);
   }
@@ -85,7 +85,7 @@ class ModalSign extends React.Component {
 
   handleLogInSubmit2() {
     console.log("BOOO! 2", "HERE ALL INPUT DATA");
-    // validate form 2    
+    // validate form 2
     this.toggle();
   }
 
@@ -103,12 +103,53 @@ class ModalSign extends React.Component {
     });
   }
 
+  validateUsername = value => {
+    let errors = [];
+    let suffix = 'username should';
+
+    if (!value) {
+      const err = suffix.concat(' not_be_empty');
+      errors.push(err);
+    }
+
+    if (value.length < 3) {
+      const err = suffix.concat(' be longer');
+      errors.push(err);
+    }
+
+    if (value.length > 16) {
+      const err = suffix.concat(' be shorter');
+      errors.push(err);
+    }
+
+    if (!/^[a-z]/.test(value)) {
+      const err = suffix.concat(' start with a letter');
+      errors.push(err);
+    }
+    if (!/^[a-z0-9-]*$/.test(value)) {
+      const err = suffix.concat(' have only letters, digits or dashes');
+      errors.push(err);
+    }
+    if (/--/.test(value)) {
+      const err = suffix.concat(' have only one dash in a row');
+      errors.push(err);
+    }
+    if (!/[a-z0-9]$/.test(value) && value.length === 16) {
+      const err = suffix.concat(' end with a letter or digit');
+      errors.push(err);
+    }
+    return errors;
+  };
+
   handleChangeUsernameInput(e) {
-    console.log("Change username input", e.target.value);
+    const username = e.target.value;
+    console.log("Change username input", username);
+    const errors = this.validateUsername(username);
+    console.log(errors);
     this.setState({
       form1Username: {
-        value: e.target.value,
-        errMsg: '',
+        value: username,
+        errors: errors,
       }
     });
   }
@@ -134,6 +175,10 @@ class ModalSign extends React.Component {
   }
 
   render() {
+    const isValidUsernameInput = this.state.form1Username.errors.length === 0;
+    const usernameInputFeedback = isValidUsernameInput ? null : this.state.form1Username.errors.map(e => <p>{e}</p>);
+    console.log("Username input feedback", usernameInputFeedback); 
+    
     return (
       <div>
         <Button
@@ -157,13 +202,20 @@ class ModalSign extends React.Component {
                 <InputGroup>
                   <InputGroupAddon addonType="prepend">@</InputGroupAddon>
                   <Input
+                    valid={ isValidUsernameInput }
+                    invalid={ !isValidUsernameInput }
                     type="text"
                     placeholder="username"
                     value={ this.state.form1Username.value }
                     onChange={ this.handleChangeUsernameInput }
                   />
+                  <FormFeedback
+                    valid={ isValidUsernameInput }
+                    invalid={ !isValidUsernameInput }
+                  >
+                    {usernameInputFeedback}  
+                  </FormFeedback>
                 </InputGroup>
-                <FormFeedback>You will not be able to see this</FormFeedback>
               </FormGroup>
 
               <FormGroup>
@@ -175,7 +227,7 @@ class ModalSign extends React.Component {
                 />
                 <FormFeedback>You will not be able to see this</FormFeedback>
               </FormGroup>
-              
+
               <FormGroup check>
                 <Label check>
                   <Input
@@ -235,7 +287,7 @@ class ModalSign extends React.Component {
                       color="primary"
                       onClick={ this.handleLogInSubmit2 }
                     >
-                      Log In 
+                      Log In
                     </Button>
                   </Col>
                 </Row>
