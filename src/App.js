@@ -28,13 +28,14 @@ import {
   FormGroup,
   Label,
   Form,
-  FormFeedback
+  FormFeedback,
+  Alert
 } from 'reactstrap';
 import {
   AvField,
   AvForm
 } from 'availity-reactstrap-validation';
-
+import golos from 'golos-js';
 
 class ModalSign extends React.Component {
   constructor(props) {
@@ -47,12 +48,12 @@ class ModalSign extends React.Component {
       },
       form1MasterPass: {
         value: '',
-        errMsg: ''
+        errors: ''
       },
       form2KeepLogged: false,
       form2PrivateKey: {
         value: '',
-        errMsg: ''
+        errors: ''
       },
       modal: false,
     };
@@ -70,23 +71,108 @@ class ModalSign extends React.Component {
     this.handleLogInSubmit2 = this.handleLogInSubmit2.bind(this);
   }
 
+  componentDidMount() {
+    golos.config.set('websocket', 'wss://ws.testnet.golos.io');
+    golos.config.set('chain_id', '5876894a41e6361bde2e73278f07340f2eb8b41c2facd29099de9deef6cdb679');
+  }
+
   toggle() {
     this.setState({
       modal: !this.state.modal,
     });
   }
 
-  handleLogInSubmit1() {
-    console.log("BOOO! 1", "HERE ALL INPUT DATA");
-    // validate form 1
+  checkLogIn1 = async (username, pass) => {
+    const [account] = await golos.api.getAccounts([username]);
+    console.log("RESPONSE FROM accounts: ", account);
 
-    this.toggle();
+    const roles = ['posting'];
+    let keys = await golos.auth.getPrivateKeys(username, pass, roles);
+    console.log("RESPONE FROM checkLogIn1: ", keys);
+
+    if (account && account.posting.key_auths[0][0] === keys.postingPubkey) {
+      //TODO: logIn1();
+      console.log("правильный логин и мастер-пароль!");
+      this.toggle();
+    } else {
+      console.log("не правильный логин и\или мастер-пароль!");
+      this.setState({
+        feedbackOnLogIn1:
+            <p className="text-center text-warning">
+              <small>
+                Wrong username or master password!
+              </small>
+            </p>
+      });
+    }
+  };
+
+  handleLogInSubmit1() {
+    const isValidUsernameInput = this.state.form1Username.errors.length === 0 && this.state.form1MasterPass.value !== '';
+    const isValidMasterPass = this.state.form1MasterPass.value !== '';
+    if (!isValidUsernameInput && !isValidMasterPass) {
+      this.setState({
+        feedbackOnLogIn1:
+            <p className="text-center text-warning">
+              <small>
+                To Log In fill the form and do it right.
+              </small>
+            </p>
+      });
+    } else {
+      const username = this.state.form1Username.value;
+      const pass = this.state.form1MasterPass.value;
+      this.checkLogIn1();
+    }
+
+  }
+
+  async checkLogIn2(privateKey) {
+    try {
+      // golos.api.getConfig()
+      //   .then((c) => console.log("CONFIG HERE: ", c));
+      const publicKey1 = await golos.auth.wifToPublic(privateKey);
+      const [[username],] = await golos.api.getKeyReferences([publicKey1]);
+      const [account] = await golos.api.getAccounts([username]);
+      const [publicKey2,] = account.posting.key_auths[0];
+      if (publicKey1 === publicKey2) {
+        console.log("PRIVATE KEY is CORRECT!");
+        // TODO: DO LOG IN HERE
+        this.toggle();
+      } else {
+        console.log("PRIVATE KEY is NOT CORRECT!");
+        this.setState({
+          feedbackOnLogIn2:
+              <p className="text-center text-warning">
+                <small>
+                  Wrong private key!
+                </small>
+              </p>
+        });
+      }
+    } catch (e) {
+      console.error("Log in 2 GO WRO..NGGGGGGG!", e);
+    }
   }
 
   handleLogInSubmit2() {
-    console.log("BOOO! 2", "HERE ALL INPUT DATA");
-    // validate form 2
-    this.toggle();
+    const isValidForm2 = this.state.form2PrivateKey.errors.length === 0 && this.state.form2PrivateKey.value !== '';
+    if (!isValidForm2) {
+      this.setState({
+        feedbackOnLogIn2:
+          <p className="text-center text-warning">
+            <small>
+              To Log In fill the form and do it right.
+            </small>
+          </p>
+      });
+    } else {
+      // const privateKey = "5KQkU7vhhqG1HK9FHVw4CuWeQE7b3MqWuyZBFkxKeDHmLPVFwry";
+      const privateKey = this.state.form2PrivateKey.value;
+      this.checkLogIn2(privateKey);
+      // this.toggle();
+      // do stuff to login
+    }
   }
 
   handleChangeKeepLoggedInput1() {
@@ -108,7 +194,7 @@ class ModalSign extends React.Component {
     let suffix = 'username should';
 
     if (!value) {
-      const err = suffix.concat(' not_be_empty');
+      const err = suffix.concat(' not be empty');
       errors.push(err);
     }
 
@@ -141,6 +227,39 @@ class ModalSign extends React.Component {
     return errors;
   };
 
+  validatePrivateKey = value => {
+    let errors = [];
+    let suffix = 'private key should';
+
+    if (value.length !== 51) {
+      const err = suffix.concat(` have length 51. Your key have length ${value.length}`);
+      errors.push(err);
+    }
+
+    if (!/[a-z0-9]$/.test(value)) {
+      const err = suffix.concat(' have only letters and/or digits');
+      errors.push(err);
+    }
+
+    const fst2letters = value.slice(0, 2);
+
+    if (fst2letters !== "5K") {
+      const err = suffix.concat(' start with 5K');
+      errors.push(err);
+    }
+
+    // const publicKey1 = golos.auth.wifToPublic(privateKey);
+
+    try {
+      golos.auth.wifToPublic(value);
+    } catch (e) {
+      const err = suffix.concat(' private key has wrong checksum');
+      errors.push(err);
+    }
+
+    return errors;
+  };
+
   handleChangeUsernameInput(e) {
     const username = e.target.value;
     console.log("Change username input", username);
@@ -165,11 +284,14 @@ class ModalSign extends React.Component {
   }
 
   handleChangePrivateKeyInput(e) {
-    console.log("Change private key input", e.target.value);
+    const privateKey = e.target.value;
+    console.log("Change private key input", privateKey);
+    const errors = this.validatePrivateKey(privateKey);
+    console.log("Private key validation errors:", errors);
     this.setState({
       form2PrivateKey: {
-        value: e.target.value,
-        errMsg: '',
+        value: privateKey,
+        errors: errors,
       }
     });
   }
@@ -177,8 +299,10 @@ class ModalSign extends React.Component {
   render() {
     const isValidUsernameInput = this.state.form1Username.errors.length === 0;
     const usernameInputFeedback = isValidUsernameInput ? null : this.state.form1Username.errors.map(e => <p>{e}</p>);
-    console.log("Username input feedback", usernameInputFeedback); 
-    
+
+    const isValidPrivateKeyInput = this.state.form2PrivateKey.errors.length === 0;
+    const privateKeyInputFeedback = isValidPrivateKeyInput ? null : this.state.form2PrivateKey.errors.map(e => <p>{e}</p>);
+
     return (
       <div>
         <Button
@@ -202,7 +326,7 @@ class ModalSign extends React.Component {
                 <InputGroup>
                   <InputGroupAddon addonType="prepend">@</InputGroupAddon>
                   <Input
-                    valid={ isValidUsernameInput }
+                    valid={ isValidUsernameInput &&  this.state.form1Username.value !== ''}
                     invalid={ !isValidUsernameInput }
                     type="text"
                     placeholder="username"
@@ -213,19 +337,19 @@ class ModalSign extends React.Component {
                     valid={ isValidUsernameInput }
                     invalid={ !isValidUsernameInput }
                   >
-                    {usernameInputFeedback}  
+                    {usernameInputFeedback}
                   </FormFeedback>
                 </InputGroup>
               </FormGroup>
 
               <FormGroup>
                 <Input
+                  valid={ this.state.form1MasterPass.value !== ''}
                   type="password"
                   placeholder="master"
                   value={ this.state.form1MasterPass.value }
                   onChange={ this.handleChangeMasterInput }
                 />
-                <FormFeedback>You will not be able to see this</FormFeedback>
               </FormGroup>
 
               <FormGroup check>
@@ -250,22 +374,30 @@ class ModalSign extends React.Component {
                     </Button>
                   </Col>
                 </Row>
+                  { this.state.feedbackOnLogIn1 }
               </Container>
             </Form>
 
-              <hr></hr>
-              <p className="text-center"><small>OR</small></p>
-              <p className="text-center">Please enter only your private posting key</p>
+            <hr></hr>
+            <p className="text-center"><small>OR</small></p>
+            <p className="text-center">Please enter only your private posting key</p>
 
             <Form onSubmit={ this.handleLogInSubmit2 }>
               <FormGroup>
                 <Input
+                  valid={ isValidPrivateKeyInput && this.state.form2PrivateKey.value !== ''}
+                  invalid={ !isValidPrivateKeyInput }
                   type="password"
-                  placeholder="private"
+                  placeholder="private key"
                   value={ this.state.form2PrivateKey.value }
                   onChange={ this.handleChangePrivateKeyInput }
                 />
-                <FormFeedback>You will not be able to see this</FormFeedback>
+                <FormFeedback
+                  valid={ isValidPrivateKeyInput }
+                  invalid={ !isValidPrivateKeyInput }
+                >
+                  {privateKeyInputFeedback}
+                </FormFeedback>
               </FormGroup>
 
               <FormGroup check>
@@ -291,6 +423,7 @@ class ModalSign extends React.Component {
                     </Button>
                   </Col>
                 </Row>
+                { this.state.feedbackOnLogIn2 }
               </Container>
             </Form>
           </ModalBody>
@@ -308,7 +441,6 @@ class ModalSign extends React.Component {
                   </Button>
                 </Col>
               </Row>
-
             </Container>
           </ModalFooter>
 
