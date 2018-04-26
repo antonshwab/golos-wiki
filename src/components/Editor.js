@@ -24,7 +24,8 @@ class Editor extends React.Component {
   }
 
   onBlur(e){
-    console.log("onBlur event called with event info: ", e);
+    console.log("onBlur event called with event info:  ", e);
+
   }
   
   afterPaste(e){
