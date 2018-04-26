@@ -31,7 +31,11 @@ import {
   Alert
 } from 'reactstrap';
 import golos from 'golos-js';
-import { ModalLogIn } from './components/ModalLogIn';
+// import { ModalLogIn, Editor } from './components';
+import ModalLogIn from './components/ModalLogIn';
+import Editor from './components/Editor';
+
+
 
 
 class App extends Component {
@@ -116,6 +120,7 @@ class App extends Component {
             </Nav>
           </Collapse>
         </Navbar>
+        <Editor />
       </div>
     );
   }

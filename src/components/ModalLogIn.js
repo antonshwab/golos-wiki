@@ -32,7 +32,7 @@ import {
 import golos from 'golos-js';
 
 
-export class ModalLogIn extends React.Component {
+class ModalLogIn extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
@@ -454,3 +454,5 @@ export class ModalLogIn extends React.Component {
       );
     }
   }
+
+  export default ModalLogIn;
