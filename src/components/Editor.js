@@ -18,7 +18,7 @@ class Editor extends React.Component {
   }
 
   onChange(e) {
-    console.log("onChange fired with event info: ", e);
+    console.log("onChange fired with event info : ", e);
     const newContent = e.editor.getData();
     this.updateContent(newContent);
   }
