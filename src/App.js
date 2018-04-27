@@ -31,12 +31,9 @@ import {
   Alert
 } from 'reactstrap';
 import golos from 'golos-js';
-// import { ModalLogIn, Editor } from './components';
 import ModalLogIn from './components/ModalLogIn';
 import Editor from './components/Editor';
-
-
-
+import ArticleExplorer from './components/ArticlesExplorer';
 
 class App extends Component {
   constructor(props) {
@@ -120,7 +117,12 @@ class App extends Component {
             </Nav>
           </Collapse>
         </Navbar>
-        <Editor />
+        <Editor
+          privateKey={'5Hvp79CaQrYUD9d33VvdtWY5BhyimS4t5vMDCBJE1WsTUUPuu1F'}
+          username={'test3'}
+        />
+
+        <ArticleExplorer />
       </div>
     );
   }
