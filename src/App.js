@@ -1,51 +1,26 @@
 import React, { Component } from 'react';
 import './App.css';
-import {
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Container,
-  Row,
-  Col,
-  InputGroup,
-  InputGroupText,
-  InputGroupAddon,
-  Input,
-  FormGroup,
-  Label,
-  Form,
-  FormFeedback,
-  Alert
-} from 'reactstrap';
+import * as B from 'reactstrap';
+// import classnames from 'classnames';
 import golos from 'golos-js';
 import ModalLogIn from './components/ModalLogIn';
-import Editor from './components/Editor';
-import ArticleExplorer from './components/ArticlesExplorer';
+// import ArticleExplorer from './components/ArticlesExplorer';
+import Main from './components/Main';
+import CreateArticle from './components/CreateArticle';
+import ReadArticle from './components/ReadArticle';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-    this.toggle = this.toggle.bind(this);
-    this.logOut = this.logOut.bind(this);
+    this.switchRouteByActivePill = this.switchRouteByActivePill.bind(this);
+    this.switchRoute = this.switchRoute.bind(this);
     this.saveUsername = this.saveUsername.bind(this);
     this.savePrivateKey = this.savePrivateKey.bind(this);
-
+    this.logOut = this.logOut.bind(this);
+    
     this.state = {
-      isOpen: false,
+      route: 'main'
     };
   }
 
@@ -66,12 +41,6 @@ class App extends Component {
     })
   }
 
-  toggle() {
-    this.setState({
-      isOpen: !this.state.isOpen,
-    });
-  }
-
   logOut(e) {
     e.preventDefault();
     console.log("LOG OUT");
@@ -84,12 +53,12 @@ class App extends Component {
   renderLogInOut() {
     if (this.state.username || this.state.privateKey) {
       return (
-        <Button
+        <B.Button
           color="primary"
           onClick={this.logOut}
         >
           Log Out
-        </Button>
+        </B.Button>
       );
     }
     return (
@@ -101,28 +70,84 @@ class App extends Component {
     );
   }
 
+  switchRouteByActivePill(e) {
+    e.preventDefault();
+    const id = e.target.id;
+    this.setState({
+      route: id,
+    });
+  }
+
+  switchRendererByActiveNavItem() {
+    const route = this.state.activePill;
+    this.setState({
+      route: route,
+    });
+  }
+
+  switchRoute(r) {
+    this.setState({
+      route: r,
+    });
+  }
+
+  readArticle(ra) {
+    this.setState({
+      currentRawArticle: ra,
+    });
+    this.switchRoute('readArticle');
+  }
+
+  renderRoute() {
+    switch (this.state.route) {
+      case 'main': return <Main switchRoute={ this.switchRoute } readArticle={ this.readArticle }/>;
+      case 'readArticle': return <ReadArticle rawArticle={ this.state.currentRawArticle }/>;
+      case 'createArticle': return <CreateArticle switchRoute={ this.switchRoute }/>;
+      default: return <Main switchRoute={ this.switchRoute } readArticle={ this.readArticle }/>;
+    }
+  }
+
   render() {
     return (
       <div>
-        <Navbar color="light" light expand="md">
-          <NavbarBrand href="/">Golos-Wiki</NavbarBrand>
-          <NavbarToggler onClick={this.toggle} />
-          <Collapse isOpen={this.state.isOpen} navbar>
-            <Nav className="ml-auto" navbar>
-              <NavItem>
-                <NavLink>
-                  { this.renderLogInOut() }
-                </NavLink>
-              </NavItem>
-            </Nav>
-          </Collapse>
-        </Navbar>
-        <Editor
-          privateKey={'5Hvp79CaQrYUD9d33VvdtWY5BhyimS4t5vMDCBJE1WsTUUPuu1F'}
-          username={'test3'}
-        />
+        <B.Navbar color="light" light expand="md">
+          <B.NavbarBrand href="/">Golos-Wiki</B.NavbarBrand>
+          <B.Nav pills>
+            <B.NavItem>
+              <B.NavLink
+                href="/main"              
+                id = 'main'
+                onClick={this.switchRouteByActivePill}
+                active={this.state.route === 'main'}
+              >
+                Main
+              </B.NavLink>
+            </B.NavItem>
+            <B.NavItem>
+              <B.NavLink 
+                href="/createArticle"
+                id = 'createArticle'
+                onClick={this.switchRouteByActivePill}                
+                active={this.state.route === 'createArticle'}
+              >
+                Create Article
+              </B.NavLink>
+            </B.NavItem>
+          </B.Nav>
+          <B.Nav 
+            pills
+            className="ml-auto" 
+            navbar
+          >
+            <B.NavItem>
+              <B.NavLink>
+                { this.renderLogInOut() }
+              </B.NavLink>
+            </B.NavItem>
+          </B.Nav>
+        </B.Navbar>
 
-        <ArticleExplorer />
+        {this.renderRoute()}
       </div>
     );
   }
