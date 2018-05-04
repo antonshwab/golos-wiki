@@ -1,36 +1,6 @@
 import React, { Component } from 'react';
-import {
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Container,
-  Row,
-  Col,
-  InputGroup,
-  InputGroupText,
-  InputGroupAddon,
-  Input,
-  FormGroup,
-  Label,
-  Form,
-  FormFeedback,
-  Alert
-} from 'reactstrap';
+import * as B from 'reactstrap';
 import golos from 'golos-js';
-
 
 class ModalLogIn extends React.Component {
     constructor(props) {
@@ -97,12 +67,12 @@ class ModalLogIn extends React.Component {
       console.log("RESPONE FROM checkLogIn1: ", keys);
   
       if (account && account.posting.key_auths[0][0] === keys.postingPubkey) {
-        console.log("правильный логин и мастер-пароль!");
+        console.log("username and master-pass are totally ok!");
         this.props.saveUsername(username);
         this.resetFormsInputs();
         this.toggle();
       } else {
-        console.log("не правильный логин и\или мастер-пароль!");
+        console.log("wrong username or pass!");
         this.setState({
           feedbackOnLogIn1:
               <p className="text-center text-warning">
@@ -307,27 +277,27 @@ class ModalLogIn extends React.Component {
   
       return (
         <div>
-          <Button
+          <B.Button
             color="primary"
             onClick={this.toggle}>
             {this.props.buttonLabel}
-          </Button>
+          </B.Button>
   
-          <Modal
+          <B.Modal
             modalTransition={{ timeout: 1 }}
             backdropTransition={{ timeout: 1 }}
             isOpen={this.state.modal}
             toggle={this.toggle}
             className={this.props.className}
           >
-            <ModalBody>
+            <B.ModalBody>
               <p className="text-center">Please enter your login and master password</p>
   
-              <Form onSubmit={ this.handleLogInSubmit1 }>
-                <FormGroup>
-                  <InputGroup>
-                    <InputGroupAddon addonType="prepend">@</InputGroupAddon>
-                    <Input
+              <B.Form onSubmit={ this.handleLogInSubmit1 }>
+                <B.FormGroup>
+                  <B.InputGroup>
+                    <B.InputGroupAddon addonType="prepend">@</B.InputGroupAddon>
+                    <B.Input
                       valid={ isValidUsernameInput &&  this.state.form1Username.value !== ''}
                       invalid={ !isValidUsernameInput }
                       type="text"
@@ -335,58 +305,58 @@ class ModalLogIn extends React.Component {
                       value={ this.state.form1Username.value }
                       onChange={ this.handleChangeUsernameInput }
                     />
-                    <FormFeedback
+                    <B.FormFeedback
                       valid={ isValidUsernameInput }
                       invalid={ !isValidUsernameInput }
                     >
                       {usernameInputFeedback}
-                    </FormFeedback>
-                  </InputGroup>
-                </FormGroup>
+                    </B.FormFeedback>
+                  </B.InputGroup>
+                </B.FormGroup>
   
-                <FormGroup>
-                  <Input
+                <B.FormGroup>
+                  <B.Input
                     valid={ this.state.form1MasterPass.value !== ''}
                     type="password"
                     placeholder="master"
                     value={ this.state.form1MasterPass.value }
                     onChange={ this.handleChangeMasterInput }
                   />
-                </FormGroup>
+                </B.FormGroup>
   
-                <FormGroup check>
-                  <Label check>
-                    <Input
+                <B.FormGroup check>
+                  <B.Label check>
+                    <B.Input
                       type="checkbox"
                       onChange={ this.handleChangeKeepLoggedInput1 }
                     />
                     {' '}
                     <small>Keep me logged</small>
-                  </Label>
-                </FormGroup>
+                  </B.Label>
+                </B.FormGroup>
   
-                <Container>
-                  <Row className="justify-content-center">
-                    <Col sm='auto'>
-                      <Button
+                <B.Container>
+                  <B.Row className="justify-content-center">
+                    <B.Col sm='auto'>
+                      <B.Button
                         color="primary"
                         onClick={ this.handleLogInSubmit1 }
                       >
                         Log In
-                      </Button>
-                    </Col>
-                  </Row>
+                      </B.Button>
+                    </B.Col>
+                  </B.Row>
                     { this.state.feedbackOnLogIn1 }
-                </Container>
-              </Form>
+                </B.Container>
+              </B.Form>
   
               <hr></hr>
               <p className="text-center"><small>OR</small></p>
               <p className="text-center">Please enter only your private posting key</p>
   
-              <Form onSubmit={ this.handleLogInSubmit2 }>
-                <FormGroup>
-                  <Input
+              <B.Form onSubmit={ this.handleLogInSubmit2 }>
+                <B.FormGroup>
+                  <B.Input
                     valid={ isValidPrivateKeyInput && this.state.form2PrivateKey.value !== ''}
                     invalid={ !isValidPrivateKeyInput }
                     type="password"
@@ -394,62 +364,62 @@ class ModalLogIn extends React.Component {
                     value={ this.state.form2PrivateKey.value }
                     onChange={ this.handleChangePrivateKeyInput }
                   />
-                  <FormFeedback
+                  <B.FormFeedback
                     valid={ isValidPrivateKeyInput }
                     invalid={ !isValidPrivateKeyInput }
                   >
                     {privateKeyInputFeedback}
-                  </FormFeedback>
-                </FormGroup>
+                  </B.FormFeedback>
+                </B.FormGroup>
   
-                <FormGroup check>
-                  <Label check>
-                    <Input
+                <B.FormGroup check>
+                  <B.Label check>
+                    <B.Input
                       type="checkbox"
                       onChange={ this.handleChangeKeepLoggedInput2 }
                     />
                     {' '}
                     <small>Keep me logged</small>
-                  </Label>
-                </FormGroup>
+                  </B.Label>
+                </B.FormGroup>
   
                 <br />
-                <Container>
-                  <Row className="justify-content-center">
-                    <Col sm='auto'>
-                      <Button
+                <B.Container>
+                  <B.Row className="justify-content-center">
+                    <B.Col sm='auto'>
+                      <B.Button
                         color="primary"
                         onClick={ this.handleLogInSubmit2 }
                       >
                         Log In
-                      </Button>
-                    </Col>
-                  </Row>
+                      </B.Button>
+                    </B.Col>
+                  </B.Row>
                   { this.state.feedbackOnLogIn2 }
-                </Container>
-              </Form>
-            </ModalBody>
+                </B.Container>
+              </B.Form>
+            </B.ModalBody>
   
-            <ModalFooter>
-              <Container>
-                <Row className="justify-content-center">
+            <B.ModalFooter>
+              <B.Container>
+                <B.Row className="justify-content-center">
                   <p className="text-center"><small>Don't have an account?</small></p>
-                </Row>
+                </B.Row>
   
-                <Row className="justify-content-center">
-                  <Col xl="auto">
-                    <Button 
+                <B.Row className="justify-content-center">
+                  <B.Col xl="auto">
+                    <B.Button 
                       color="primary" 
                       href="https://golos.io/create_account"
                     >
                       Sign Up
-                    </Button>
-                  </Col>
-                </Row>
-              </Container>
-            </ModalFooter>
+                    </B.Button>
+                  </B.Col>
+                </B.Row>
+              </B.Container>
+            </B.ModalFooter>
   
-          </Modal>
+          </B.Modal>
         </div>
       );
     }
