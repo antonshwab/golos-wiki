@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import './App.css';
 import * as B from 'reactstrap';
 // import classnames from 'classnames';
-import golos from 'golos-js';
+// import golos from 'golos-js';
 import ModalLogIn from './components/ModalLogIn';
 // import ArticleExplorer from './components/ArticlesExplorer';
-import Main from './components/Main';
+import Home from './components/Home';
 import CreateArticle from './components/CreateArticle';
 import ReadArticle from './components/ReadArticle';
 
@@ -18,15 +18,17 @@ class App extends Component {
     this.saveUsername = this.saveUsername.bind(this);
     this.savePrivateKey = this.savePrivateKey.bind(this);
     this.logOut = this.logOut.bind(this);
+    this.readArticle = this.readArticle.bind(this);
     
     this.state = {
-      route: 'main'
+      route: 'home',
+      // username: 'test8',
+      // privateKey: '5J1kGxcN1fhSSwBBJDFKDD8pExrBT7idSs7fr3Am4AFpah7srzU',
+      // username: 'test1',      
+      // privateKey: '5KQkU7vhhqG1HK9FHVw4CuWeQE7b3MqWuyZBFkxKeDHmLPVFwry',
+      username: 'test9',      
+      privateKey: '5KaMwjnNMxda7qg3XmB8WVtVEDUQyv4h1jMaeuomaBRFwCcH4CF',
     };
-  }
-
-  componentDidMount() {
-    golos.config.set('websocket', 'wss://ws.testnet.golos.io');
-    golos.config.set('chain_id', '5876894a41e6361bde2e73278f07340f2eb8b41c2facd29099de9deef6cdb679');
   }
 
   saveUsername(username) {
@@ -92,6 +94,7 @@ class App extends Component {
   }
 
   readArticle(ra) {
+    console.log('read article handler', ra);
     this.setState({
       currentRawArticle: ra,
     });
@@ -100,14 +103,33 @@ class App extends Component {
 
   renderRoute() {
     switch (this.state.route) {
-      case 'main': return <Main switchRoute={ this.switchRoute } readArticle={ this.readArticle }/>;
-      case 'readArticle': return <ReadArticle rawArticle={ this.state.currentRawArticle }/>;
-      case 'createArticle': return <CreateArticle switchRoute={ this.switchRoute }/>;
-      default: return <Main switchRoute={ this.switchRoute } readArticle={ this.readArticle }/>;
+    case 'home': 
+    return (
+      <Home 
+        switchRoute={ this.switchRoute } 
+        readArticle={ this.readArticle }
+      />);
+    case 'readArticle': 
+    return (
+      <ReadArticle 
+        rawArticle={ this.state.currentRawArticle }
+      />
+    );
+    case 'createArticle': 
+    return (
+      <CreateArticle 
+        username={this.state.username}
+        privateKey={this.state.privateKey}
+        switchRoute={ this.switchRoute }
+      />
+    );
+    default: 
+      return <Home switchRoute={ this.switchRoute } readArticle={ this.readArticle }/>;
     }
   }
 
   render() {
+    
     return (
       <div>
         <B.Navbar color="light" light expand="md">
@@ -115,12 +137,12 @@ class App extends Component {
           <B.Nav pills>
             <B.NavItem>
               <B.NavLink
-                href="/main"              
-                id = 'main'
+                href="/home"              
+                id = 'home'
                 onClick={this.switchRouteByActivePill}
-                active={this.state.route === 'main'}
+                active={this.state.route === 'home'}
               >
-                Main
+                Home
               </B.NavLink>
             </B.NavItem>
             <B.NavItem>
