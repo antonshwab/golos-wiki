@@ -5,15 +5,16 @@
   "private": true,
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^10.0.0",
-    "bootstrap": "^4.1.0",
+    "bootstrap": "^4.1.1",
     "gh-pages": "^1.1.0",
     "golos-js": "^0.6.3",
+    "ramda": "^0.25.0",
     "react": "^16.3.2",
     "react-ckeditor-component": "^1.0.7",
     "react-dom": "^16.3.2",
     "react-froala-wysiwyg": "^2.8.1",
     "react-scripts": "1.1.4",
-    "reactstrap": "^5.0.0-beta.3"
+    "reactstrap": ""
   },
   "scripts": {
     "predeploy": "npm run build",
