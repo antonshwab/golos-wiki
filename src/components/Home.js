@@ -11,10 +11,6 @@ class ArticleCard extends React.Component {
 
   handleClick() {
     this.props.readArticle(this.props.rawArticle);
-    // TODO:
-    // this.props.readArticle(this.props.rawArticle)
-    //    - switch route to READ ARTICLE to desplay article
-    //    - render ReadArticle | Article comp-t
   }
 
   render() {
@@ -28,7 +24,7 @@ class ArticleCard extends React.Component {
             {title} by {author}
           </B.CardTitle>
           <B.CardText>
-            {body}
+            <div dangerouslySetInnerHTML={{__html: body.slice(0, 25)}}/>
           </B.CardText>
           <B.Button
             onClick={this.handleClick}

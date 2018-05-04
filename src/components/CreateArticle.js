@@ -56,7 +56,8 @@ class CreateArticle extends React.Component {
 
   async createArticle() {
     // TODO: 
-    // ADD normalization on some fields
+    // ADD normalization on some fields and/or values
+    // for example on permlink
 
     const wif = this.props.privateKey;
     const parentAuthor = '';
