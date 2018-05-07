@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as B from 'reactstrap';
 import golos from 'golos-js';
 import * as R from 'ramda';
+import { fetchArticles } from '../helpers';
 
 class ArticleCard extends React.Component {
   constructor(props) {
@@ -46,23 +47,11 @@ class Board extends React.Component {
   }
 
   async componentDidMount() {
-    // TODO:
-    // work around: fetch all posts for users test1-test10 with tag 'wiki'
-    try {
-      const query = {
-        select_authors: ['test9'],
-        select_tags: ['wiki'],
-        limit: 100
-      };
-      const res = await golos.api.getDiscussionsByBlog(query);
-      console.log('raw articles: ', res);
-      this.setState({
-        rawArticles: res,
-      });
-    } catch(e) {
-      console.error(e);
-    }
-  
+    const articles = await fetchArticles();
+    console.log(articles);
+    this.setState({
+      rawArticles: articles,
+    })
     // TODO: would be great. try later...
     // const q = {
     //   // select_tags: ['wiki'],
