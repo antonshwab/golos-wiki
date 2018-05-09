@@ -129,7 +129,7 @@ class CreateArticle extends React.Component {
 
           <B.FormGroup row>
             <B.Col sm="1">
-              <B.Label for="title" sm={2}>
+              <B.Label for="category" sm={2}>
                 Category
               </B.Label>
             </B.Col>  
@@ -146,7 +146,7 @@ class CreateArticle extends React.Component {
           <div>
             <B.FormGroup row>
               <B.Col sm="1">
-                <B.Label for="title" sm={2}>
+                <B.Label for="tag1" sm={2}>
                   Tags
                 </B.Label>
               </B.Col>  
@@ -190,15 +190,15 @@ class CreateArticle extends React.Component {
             </B.FormGroup>
           </div>
           
-
           <B.FormGroup row>
             <B.Col sm="1">
-              <B.Label for="title" sm={2}>
+              <B.Label for="editor" sm={2}>
                 Content
               </B.Label>
             </B.Col>  
             <B.Col sm="11">
-              <Editor 
+              <Editor
+                id={"editor"} 
                 content={this.props.content || this.state.content}
                 updateContent={this.onContentChange}
               />
