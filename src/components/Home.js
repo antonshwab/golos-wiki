@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as B from 'reactstrap';
 import golos from 'golos-js';
 import * as R from 'ramda';
+import { Route, Switch, Link, NavLink, Redirect } from 'react-router-dom';
 import { fetchArticles } from '../helpers';
 
 class ArticleCard extends React.Component {
@@ -11,12 +12,14 @@ class ArticleCard extends React.Component {
   }
 
   handleClick() {
+    console.log('HandleClick on READ: ', this.props.rawArticle);
     this.props.readArticle(this.props.rawArticle);
   }
 
   render() {
     console.log('ArticleCard props: ', this.props);
-    const {title, author, body, } = this.props.rawArticle;
+    const {title, author, body, permlink } = this.props.rawArticle;
+    const routeToArticle = `/articles/${permlink}`;
 
     return (
       <B.Col sm="4">
@@ -27,11 +30,9 @@ class ArticleCard extends React.Component {
           <B.CardText>
             <div dangerouslySetInnerHTML={{__html: body.slice(0, 25)}}/>
           </B.CardText>
-          <B.Button
-            onClick={this.handleClick}
-          >
-            READ
-          </B.Button>
+
+          <B.Button to={routeToArticle} color="primary" tag={NavLink}>Read</B.Button>
+          {/* <B.NavLink to={routeToArticle} activeClassName='active' tag={NavLink}>Read</B.NavLink>           */}
         </B.Card>
       </B.Col>
     );
@@ -48,7 +49,7 @@ class Board extends React.Component {
 
   async componentDidMount() {
     const articles = await fetchArticles();
-    console.log(articles);
+    console.log('Board componentDidMount with articles:', articles);
     this.setState({
       rawArticles: articles,
     })
@@ -74,8 +75,8 @@ class Board extends React.Component {
     const wrappedToCol = articles.map((a, index) => {
       return (<ArticleCard
         key={index}
-        readArticle={this.props.readArticle}
         rawArticle={a}
+        readArticle={this.props.readArticle}
       />);
     });
     const groupedBy3 = R.splitEvery(3, wrappedToCol);

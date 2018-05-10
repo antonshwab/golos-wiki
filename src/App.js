@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import * as B from 'reactstrap';
+import { Route, Switch, Link, NavLink, Redirect } from 'react-router-dom';
 // import classnames from 'classnames';
 // import golos from 'golos-js';
 import ModalLogIn from './components/ModalLogIn';
@@ -13,8 +14,6 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.switchRouteByActivePill = this.switchRouteByActivePill.bind(this);
-    this.switchRoute = this.switchRoute.bind(this);
     this.saveUsername = this.saveUsername.bind(this);
     this.savePrivateKey = this.savePrivateKey.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -72,88 +71,24 @@ class App extends Component {
     );
   }
 
-  switchRouteByActivePill(e) {
-    e.preventDefault();
-    const id = e.target.id;
-    this.setState({
-      route: id,
-    });
-  }
-
-  switchRendererByActiveNavItem() {
-    const route = this.state.activePill;
-    this.setState({
-      route: route,
-    });
-  }
-
-  switchRoute(r) {
-    this.setState({
-      route: r,
-    });
-  }
-
   readArticle(ra) {
     console.log('read article handler', ra);
     this.setState({
       currentRawArticle: ra,
     });
-    this.switchRoute('readArticle');
-  }
-
-  renderRoute() {
-    switch (this.state.route) {
-    case 'home': 
-    return (
-      <Home 
-        switchRoute={ this.switchRoute } 
-        readArticle={ this.readArticle }
-      />);
-    case 'readArticle': 
-    return (
-      <ReadArticle 
-        rawArticle={ this.state.currentRawArticle }
-      />
-    );
-    case 'createArticle': 
-    return (
-      <CreateArticle 
-        username={this.state.username}
-        privateKey={this.state.privateKey}
-        switchRoute={ this.switchRoute }
-      />
-    );
-    default: 
-      return <Home switchRoute={ this.switchRoute } readArticle={ this.readArticle }/>;
-    }
   }
 
   render() {
-    
     return (
       <div>
         <B.Navbar color="light" light expand="md">
           <B.NavbarBrand href="/">Golos-Wiki</B.NavbarBrand>
           <B.Nav pills>
             <B.NavItem>
-              <B.NavLink
-                href="/home"              
-                id = 'home'
-                onClick={this.switchRouteByActivePill}
-                active={this.state.route === 'home'}
-              >
-                Home
-              </B.NavLink>
+              <B.NavLink exact to="/" activeClassName="active" tag={NavLink}>Home</B.NavLink>              
             </B.NavItem>
             <B.NavItem>
-              <B.NavLink 
-                href="/createArticle"
-                id = 'createArticle'
-                onClick={this.switchRouteByActivePill}                
-                active={this.state.route === 'createArticle'}
-              >
-                Create Article
-              </B.NavLink>
+              <B.NavLink to="/createArticle" activeClassName="active" tag={NavLink}>Create Article</B.NavLink>
             </B.NavItem>
           </B.Nav>
           <B.Nav 
@@ -169,10 +104,24 @@ class App extends Component {
           </B.Nav>
         </B.Navbar>
 
-        {this.renderRoute()}
+        <Switch>
+          <Route 
+            exact path='/' 
+            render={ (props) => <Home {...props} readArticle={ this.readArticle }/> }
+          />
+          <Route
+            path='/createArticle'
+            render={ (props) => <CreateArticle username={this.state.username} privateKey={this.state.privateKey}/> }
+          />
+          <Route
+            exact path={'/articles/:articleId'}
+            render={ (props) => <ReadArticle {...props} rawArticle={ this.state.currentRawArticle }/> }
+          />
+        </Switch>
       </div>
     );
   }
 }
 
 export default App;
+

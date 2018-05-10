@@ -93,8 +93,7 @@ class ReadArticle extends React.Component {
         </B.TabContent>
       </div>
     );
-
-
+    
   }
 }
 

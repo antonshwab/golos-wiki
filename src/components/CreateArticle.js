@@ -73,7 +73,7 @@ class CreateArticle extends React.Component {
     const parentPermlink = this.state.category;
     const author = this.props.username;
     const title = this.state.title;
-    const permlink = 'wiki' + '-' + parentPermlink + '-' + title + '-'  + Date.now();
+    const permlink = 'wiki' + '-' + title + '-'  + Date.now();
 
     const body = this.state.content.slice(0, 15);
 
