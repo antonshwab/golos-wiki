@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
 import CKEditor from "react-ckeditor-component";
 import * as B from 'reactstrap';
+import { AvBaseInput,
+  AvFeedback,
+  AvField,
+  AvForm,
+  AvGroup,
+  AvInput,
+  AvInputContainer,
+  AvRadio,
+  AvRadioGroup } from 'availity-reactstrap-validation';
 import * as R from 'ramda';
 import golos from 'golos-js';
 import { makePostAsync } from '../helpers';
@@ -22,7 +31,7 @@ class CreateArticle extends React.Component {
   }
 
   onFormChange(e) {
-    const id = e.target.id;    
+    const id = e.target.id;
     const value = e.target.value;
     console.log("onFormChange. id: ", id, "current value: ", value);
     switch (id) {
@@ -32,7 +41,7 @@ class CreateArticle extends React.Component {
       case 'tag4':
         const newTags = { ...this.state.tags, [id]: value };
         this.setState({
-          tags: newTags,  
+          tags: newTags,
         });
         break;
       case 'category':
@@ -55,7 +64,7 @@ class CreateArticle extends React.Component {
   }
 
   async createArticle() {
-    // TODO: 
+    // TODO:
     // ADD normalization on some fields and/or values
     // for example on permlink
 
@@ -74,10 +83,10 @@ class CreateArticle extends React.Component {
 
     try {
       console.log(
-        "Creation article with: \n", 
-        "wif: ", wif,  "\n", 
-        "parentAuthor: ", parentAuthor,  "\n", 
-        "parentPermlink: ", parentPermlink,  "\n", 
+        "Creation article with: \n",
+        "wif: ", wif,  "\n",
+        "parentAuthor: ", parentAuthor,  "\n",
+        "parentPermlink: ", parentPermlink,  "\n",
         "author: ", author, "\n",
         "permlink: ", permlink, "\n",
         "title: ", title, "\n",
@@ -86,13 +95,13 @@ class CreateArticle extends React.Component {
       );
 
       const res = await makePostAsync(
-        wif, 
-        parentAuthor, 
-        parentPermlink, 
-        author, 
-        permlink, 
-        title, 
-        body, 
+        wif,
+        parentAuthor,
+        parentPermlink,
+        author,
+        permlink,
+        title,
+        body,
         jsonMetadata
       );
 
@@ -105,41 +114,47 @@ class CreateArticle extends React.Component {
   render() {
     return (
       <B.Container>
-        <B.Form
+
+        <AvForm
           onChange={this.onFormChange}
         >
-          <B.FormGroup row>
+          <AvGroup row>
             <B.Col sm="1">
               <B.Label for="title" sm={2}>
                 Title
               </B.Label>
-            </B.Col>  
+            </B.Col>
             <B.Col sm="6">
-              <B.InputGroup>
-                <B.Input 
-                  type="text" 
+              <AvGroup>
+                <AvInput
+                  type="text"
                   name="title"
                   id="title"
                   placeholder="Title for my article"
+                  required
                 />
-                <B.InputGroupAddon addonType="append">by {this.props.username}</B.InputGroupAddon>
-              </B.InputGroup>
+                <AvFeedback>Should not be empty!</AvFeedback>
+              </AvGroup>
             </B.Col>
-          </B.FormGroup>
+          </AvGroup>
 
           <B.FormGroup row>
             <B.Col sm="1">
               <B.Label for="category" sm={2}>
                 Category
               </B.Label>
-            </B.Col>  
+            </B.Col>
             <B.Col sm="6">
-              <B.Input 
-                type="text" 
-                name="category"
-                id="category"
-                placeholder="Category for my article"
-              />
+              <AvGroup>
+                <AvInput
+                  type="text"
+                  name="category"
+                  id="category"
+                  placeholder="Category for my article"
+                  required
+                />
+                <AvFeedback>Should not be empty!</AvFeedback>
+              </AvGroup>
             </B.Col>
           </B.FormGroup>
 
@@ -149,39 +164,45 @@ class CreateArticle extends React.Component {
                 <B.Label for="tag1" sm={2}>
                   Tags
                 </B.Label>
-              </B.Col>  
-              <B.Col sm="3">
-                <B.Input 
-                  type="text" 
-                  name="tag1"
-                  id="tag1"
-                  placeholder="Tag #1"
-                />
               </B.Col>
               <B.Col sm="3">
-                <B.Input 
-                  type="text" 
+
+                <AvGroup>
+                  <AvInput
+                    type="text"
+                    name="tag1"
+                    id="tag1"
+                    placeholder="Tag #1"
+                    required
+                  />
+                  <AvFeedback>Should not be empty!</AvFeedback>                  
+                </AvGroup>
+
+              </B.Col>
+              <B.Col sm="3">
+                <B.Input
+                  type="text"
                   name="tag2"
                   id="tag2"
                   placeholder="Tag #2"
                 />
               </B.Col>
             </B.FormGroup>
-            <B.FormGroup 
+            <B.FormGroup
               row
             >
-              <B.Col sm="1"></B.Col>  
+              <B.Col sm="1"></B.Col>
               <B.Col sm="3">
-                <B.Input 
-                  type="text" 
+                <B.Input
+                  type="text"
                   name="tag3"
                   id="tag3"
                   placeholder="Tag #3"
                 />
               </B.Col>
               <B.Col sm="3">
-                <B.Input 
-                  type="text" 
+                <B.Input
+                  type="text"
                   name="tag4"
                   id="tag4"
                   placeholder="Tag #4"
@@ -189,16 +210,16 @@ class CreateArticle extends React.Component {
               </B.Col>
             </B.FormGroup>
           </div>
-          
+
           <B.FormGroup row>
             <B.Col sm="1">
               <B.Label for="editor" sm={2}>
                 Content
               </B.Label>
-            </B.Col>  
+            </B.Col>
             <B.Col sm="11">
               <Editor
-                id={"editor"} 
+                id={"editor"}
                 content={this.props.content || this.state.content}
                 updateContent={this.onContentChange}
               />
@@ -214,14 +235,13 @@ class CreateArticle extends React.Component {
             </B.Button>
           </B.Row>
 
-        </B.Form>
+        </AvForm>
 
       </B.Container>
-      
+
     );
   }
 }
-
 
 class Editor extends React.Component {
   constructor(props) {

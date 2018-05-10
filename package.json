@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^10.0.0",
+    "availity-reactstrap-validation": "^2.0.2",
     "bootstrap": "^4.1.1",
     "gh-pages": "^1.1.0",
     "golos-js": "^0.6.3",
@@ -14,7 +15,7 @@
     "react-dom": "^16.3.2",
     "react-froala-wysiwyg": "^2.8.1",
     "react-scripts": "1.1.4",
-    "reactstrap": ""
+    "reactstrap": "^6.0.1"
   },
   "scripts": {
     "predeploy": "npm run build",
