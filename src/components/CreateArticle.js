@@ -74,11 +74,15 @@ class CreateArticle extends React.Component {
     const author = this.props.username;
     const title = this.state.title;
     const permlink = 'wiki' + '-' + parentPermlink + '-' + title + '-'  + Date.now();
-    const body = this.state.content;
+
+    const body = this.state.content.slice(0, 15);
+
     const tags = R.values(this.state.tags);
     const metadata = {
       tags: ['wiki', ...tags],
+      article: this.state.content,
     };
+
     const jsonMetadata = JSON.stringify(metadata);
 
     try {

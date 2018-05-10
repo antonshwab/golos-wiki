@@ -12,12 +12,12 @@ class RenderArticle extends React.Component {
   }
 
   render() {
-    const {title, author, body, } = this.props.rawArticle;
-
+    const {title, author, body, json_metadata} = this.props.rawArticle;
+    const { article } = JSON.parse(json_metadata);
     return (
       <B.Container>
         <h3>{title}</h3>
-        <div dangerouslySetInnerHTML={{__html: body}}/>
+        <div dangerouslySetInnerHTML={{__html: article}}/>
       </B.Container>
     );
   }
