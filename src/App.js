@@ -111,7 +111,14 @@ class App extends Component {
           />
           <Route
             path='/createArticle'
-            render={ (props) => <CreateArticle username={this.state.username} privateKey={this.state.privateKey}/> }
+            render={ (props) => { 
+              return (<CreateArticle 
+                {...props}
+                username={this.state.username} 
+                privateKey={this.state.privateKey}
+                readArticle={this.readArticle}
+              />); 
+            } }
           />
           <Route
             exact path={'/articles/:articleId'}

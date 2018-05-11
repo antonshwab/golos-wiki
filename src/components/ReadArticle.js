@@ -12,6 +12,7 @@ class RenderArticle extends React.Component {
   }
 
   render() {
+    console.log('Render Article: ', this.props.rawArticle);
     const {title, author, body, json_metadata} = this.props.rawArticle;
     const { article } = JSON.parse(json_metadata);
     return (

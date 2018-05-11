@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import CKEditor from "react-ckeditor-component";
 import * as B from 'reactstrap';
+import { Route, Switch, Link, NavLink, Redirect } from 'react-router-dom';
 import { AvBaseInput,
   AvFeedback,
   AvField,
@@ -108,6 +109,17 @@ class CreateArticle extends React.Component {
         body,
         jsonMetadata
       );
+
+      console.log('Create article (result): ', res);
+
+      // <Redirect to='/'/>
+
+      const created = await golos.api.getContent(author, permlink);
+      console.log('CREATED ARTICLE: ', created);
+      this.props.readArticle(created);
+      // <Redirect push to={`/articles/${permlink}`}/>
+      this.props.history.push(`/articles/${permlink}`);
+      ///
 
     } catch(err) {
       console.error("ERROR from CREATE ARTICLE: ", err);

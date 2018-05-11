@@ -31,7 +31,14 @@ class ArticleCard extends React.Component {
             <div dangerouslySetInnerHTML={{__html: body.slice(0, 25)}}/>
           </B.CardText>
 
-          <B.Button to={routeToArticle} color="primary" tag={NavLink}>Read</B.Button>
+          <B.Button 
+            to={routeToArticle} 
+            color="primary" 
+            tag={NavLink}
+            onClick={this.handleClick}
+          >
+            Read
+          </B.Button>
           {/* <B.NavLink to={routeToArticle} activeClassName='active' tag={NavLink}>Read</B.NavLink>           */}
         </B.Card>
       </B.Col>
@@ -85,6 +92,7 @@ class Board extends React.Component {
   }
 
   render() {
+    console.log("Render HOME: ", this.props, this.state);
     const articles = this.prepArticles(this.state.rawArticles);
     return (
       <div>
