@@ -1,23 +1,39 @@
 import * as R from 'ramda';
 import golos from 'golos-js';
 
-const makePostAsync = (wif, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata) => {
+export const broadcastComment = ({ privateKey, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata }) => {
   return new Promise((resolve, reject) => {
-    golos.broadcast.comment(wif, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata, function(err, result) {
+
+    console.log('broadcastComment parentPermlink', parentPermlink);
+    
+
+    golos.broadcast.comment(privateKey, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata, function(err, result) {
       if (!err) {
-        // console.log('comment', result);
         resolve(result);
       } else {
-        // console.error(err);
         reject(err);
       }
     });    
   });
 };
 
-const fetchArticles = async (tags = []) => {
+export const getDiscussionsByTrending = (query) => {
+  return new Promise((resolve, reject) => {
+    golos.api.getDiscussionsByTrending(query, function(error, response) {
+      if (!error) {
+        resolve(response);
+      } else {
+        reject(error);
+      }
+    });
+  });
+};
+
+
+export const fetchArticles = async (tags = []) => {
   try {
-    const authors = ['test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9', 'test10'];
+    // const authors = ['test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9', 'test10'];    
+    const authors = ['beesocial-test', 'beesocial-test2', 'beesocial-test3', 'beesocial-test4'];
     const queries = authors.map((author) => {
       return {
         select_authors: [author],
@@ -31,12 +47,12 @@ const fetchArticles = async (tags = []) => {
     }));
 
     return R.flatten(nested);
+
   } catch(e) {
-    console.error(e);
+    console.error('ERROR in FETCH ARTICLES: ', e);
+    throw(e);
   }
 };
 
-export {
-  makePostAsync,
-  fetchArticles
-};
+
+export const wait = ms => new Promise(resolve => setTimeout(resolve, ms));

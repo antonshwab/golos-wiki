@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux'
 import CKEditor from "react-ckeditor-component";
 import * as B from 'reactstrap';
-import { Route, Switch, Link, NavLink, Redirect } from 'react-router-dom';
+import { Route, Switch, Link, NavLink, Redirect, withRouter } from 'react-router-dom';
 import { AvBaseInput,
   AvFeedback,
   AvField,
@@ -14,117 +16,62 @@ import { AvBaseInput,
 import * as R from 'ramda';
 import golos from 'golos-js';
 import { makePostAsync } from '../helpers';
+import { articleMetaDataChange, articleContentChange } from '../actions';
+import { Editor } from './Editor';
 
 class CreateArticle extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      title: '',
-      category: '',
-      tags: {},
-      content: '',
-    };
-
     this.onFormChange = this.onFormChange.bind(this);
-    this.onContentChange = this.onContentChange.bind(this);
     this.createArticle = this.createArticle.bind(this);
   }
 
   onFormChange(e) {
     const id = e.target.id;
     const value = e.target.value;
-    console.log("onFormChange. id: ", id, "current value: ", value);
     switch (id) {
       case 'tag1':
       case 'tag2':
       case 'tag3':
       case 'tag4':
-        const newTags = { ...this.state.tags, [id]: value };
-        this.setState({
-          tags: newTags,
-        });
+        const newTags = { ...this.props.tags, [id]: value };
+        this.props.onArticleMetaDataChange('tags', newTags);
         break;
       case 'category':
-        this.setState({
-          category: value,
-        });
-        break;
       case 'title':
-        this.setState({
-          title: value,
-        });
+        this.props.onArticleMetaDataChange(id, value);
     }
-  }
-
-  onContentChange(value) {
-    console.log('onContentChange: ', value);
-    this.setState({
-      content: value,
-    });
   }
 
   async createArticle() {
-    // TODO:
-    // ADD normalization on some fields and/or values
-    // for example on permlink
 
-    const wif = this.props.privateKey;
-    const parentAuthor = '';
-    const parentPermlink = this.state.category;
-    const author = this.props.username;
-    const title = this.state.title;
-    const permlink = 'wiki' + '-' + title + '-'  + Date.now();
+    const parentAuthor = this.props.parentAuthor || '';
+    const title = this.props.title;
+    const parentPermlink = this.props.category;
 
-    const body = this.state.content.slice(0, 15);
-
-    const tags = R.values(this.state.tags);
+    const titleInPermlink = title.toLowerCase().split(' ').join('-');
+    const permlink = `${titleInPermlink}-${Date.now()}`;
+    console.log('PERMLINK: ', permlink);
+    const body = this.props.content.slice(0, 15);
+    const tags = R.values(this.props.tags);
     const metadata = {
       tags: ['wiki', ...tags],
-      article: this.state.content,
+      articleContent: this.props.content,
     };
-
     const jsonMetadata = JSON.stringify(metadata);
 
-    try {
-      console.log(
-        "Creation article with: \n",
-        "wif: ", wif,  "\n",
-        "parentAuthor: ", parentAuthor,  "\n",
-        "parentPermlink: ", parentPermlink,  "\n",
-        "author: ", author, "\n",
-        "permlink: ", permlink, "\n",
-        "title: ", title, "\n",
-        "body: ", body, "\n",
-        "jsonMetadata: ", jsonMetadata, "\n",
-      );
+    this.props.submitArticle({
+      parentAuthor,
+      parentPermlink,
+      permlink,
+      title,
+      body,
+      jsonMetadata
+    });
 
-      const res = await makePostAsync(
-        wif,
-        parentAuthor,
-        parentPermlink,
-        author,
-        permlink,
-        title,
-        body,
-        jsonMetadata
-      );
-
-      console.log('Create article (result): ', res);
-
-      // <Redirect to='/'/>
-
-      const created = await golos.api.getContent(author, permlink);
-      console.log('CREATED ARTICLE: ', created);
-      this.props.readArticle(created);
-      // <Redirect push to={`/articles/${permlink}`}/>
-      this.props.history.push(`/articles/${permlink}`);
-      ///
-
-    } catch(err) {
-      console.error("ERROR from CREATE ARTICLE: ", err);
-    }
-
+    // this.props.history.push(`/articles/${permlink}`);
+    
   }
 
   render() {
@@ -191,7 +138,7 @@ class CreateArticle extends React.Component {
                     placeholder="Tag #1"
                     required
                   />
-                  <AvFeedback>Should not be empty!</AvFeedback>                  
+                  <AvFeedback>Should not be empty!</AvFeedback>
                 </AvGroup>
 
               </B.Col>
@@ -236,8 +183,8 @@ class CreateArticle extends React.Component {
             <B.Col sm="11">
               <Editor
                 id={"editor"}
-                content={this.props.content || this.state.content}
-                updateContent={this.onContentChange}
+                content={ this.props.content }
+                updateContent={ this.props.onArticleContentChange }
               />
             </B.Col>
           </B.FormGroup>
@@ -247,7 +194,7 @@ class CreateArticle extends React.Component {
                color="primary"
                onClick={ this.createArticle }
              >
-              Create Article
+              { this.props.buttonText }
             </B.Button>
           </B.Row>
 
@@ -259,29 +206,49 @@ class CreateArticle extends React.Component {
   }
 }
 
-class Editor extends React.Component {
-  constructor(props) {
-    super(props);
-    this.onChange = this.onChange.bind(this);
-  }
 
-  onChange(e) {
-    const newContent = e.editor.getData();
-    this.props.updateContent(newContent);
-  }
+CreateArticle.propTypes = {
+  title: PropTypes.string.isRequired,
+  category: PropTypes.string.isRequired,
+  tags: PropTypes.object.isRequired,
+  content: PropTypes.string.isRequired,
+  buttonText: PropTypes.string.isRequired,
 
-  render() {
-    return (
-      <CKEditor
-        activeClass="p10"
-        content={this.props.content}
-        events={{
-          "change": this.onChange,
-        }}
-      />
-    );
-  }
+  onArticleMetaDataChange: PropTypes.func.isRequired,
+  onArticleContentChange: PropTypes.func.isRequired,
+  submitArticle: PropTypes.func.isRequired,
+};
 
-}
 
-export default CreateArticle;
+const mapStateToProps = (state, ownProps) => {
+  const { title, category, tags, content } = state.articleCreation;
+  const { buttonText } = ownProps;
+  return {
+    title,
+    category,
+    tags,
+    content,
+    buttonText,
+  };
+};
+
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { submitArticle } = ownProps ;
+  return {
+    onArticleMetaDataChange: (fieldId, data) => dispatch(articleMetaDataChange(fieldId, data)),
+    onArticleContentChange: (content) => dispatch(articleContentChange(content)),
+    submitArticle,
+  };
+};
+
+
+export default withRouter(connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateArticle));
+
+
+
+
+
