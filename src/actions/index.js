@@ -40,7 +40,7 @@ export const submitNewArticle = ({
   title,
   body,
   jsonMetadata  
-}) => {
+}, gotoArticleVersion) => {
   return async (dispatch, getState) => {
 
     try {
@@ -84,7 +84,7 @@ export const submitNewArticle = ({
         title,
         body,
         jsonMetadata
-      }));
+      }, gotoArticleVersion));
 
     } catch(e) {
 
@@ -105,7 +105,7 @@ export const submitArticleVersion = ({
   title,
   body,
   jsonMetadata  
-}) => {
+}, gotoArticleVersion) => {
   return async (dispatch, getState) => {
 
     dispatch({ 
@@ -145,14 +145,14 @@ export const submitArticleVersion = ({
         jsonMetadata
       });
 
-      dispatch({ 
+      await dispatch({ 
         type: SUBMIT_ARTICLE_VERSION_SUCCESS, 
         payload: { 
           response 
         } 
       });
 
-      dispatch(loadSubmittedArticleVersion(parentAuthor, parentPermlink));
+      await dispatch(loadArticeVersions(parentAuthor, parentPermlink, gotoArticleVersion));
 
     } catch(e) {
       dispatch({ 
@@ -163,15 +163,15 @@ export const submitArticleVersion = ({
   };
 };
 
-export const LOAD_SUBMITTED_ARTICLE_VERSION_REQUEST = 'LOAD_SUBMITED_ARTICLE_VERSION_REQUEST';
-export const LOAD_SUBMITTED_ARTICLE_VERSION_SUCCESS = 'LOAD_SUBMITED_ARTICLE_VERSION_SUCCESS';
-export const LOAD_SUBMITTED_ARTICLE_VERSION_FAILURE = 'LOAD_SUBMITED_ARTICLE_VERSION_FAILURE';
+export const LOAD_CURRENT_ARTICLE_VERSIONS_REQUEST = 'LOAD_CURRENT_ARTICLE_VERSIONS_REQUEST';
+export const LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS = 'LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS';
+export const LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE = 'LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE';
 
-export const loadSubmittedArticleVersion = (parent, parentPermlink) => {
+export const loadArticeVersions = (parent, parentPermlink, gotoArticleVersion) => {
   return async (dispatch) => {
     try {
       dispatch({ 
-        type: LOAD_SUBMITTED_ARTICLE_VERSION_REQUEST, 
+        type: LOAD_CURRENT_ARTICLE_VERSIONS_REQUEST, 
         payload: {
           parent,
           parentPermlink
@@ -180,17 +180,18 @@ export const loadSubmittedArticleVersion = (parent, parentPermlink) => {
 
       const response = await golos.api.getContentReplies(parent, parentPermlink);
 
-      dispatch({
-        type: LOAD_SUBMITTED_ARTICLE_VERSION_SUCCESS,
+      await dispatch({
+        type: LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS,
         payload: {
-          response, // <<- here are all comments of genesis article
-                    // in reducers should map response to ONE ARTICLE (versions, versions comments)
+          response, 
         }
       });
 
+      gotoArticleVersion();
+
     } catch(e) {
       dispatch({
-        type: LOAD_SUBMITTED_ARTICLE_VERSION_FAILURE,
+        type: LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE,
         error: e
       });
     }
@@ -201,13 +202,26 @@ export const loadSubmittedArticleVersion = (parent, parentPermlink) => {
 
 // Article actions
 
-export const GOTO_ARTICLE = 'GOTO_ARTICLE';
-export const gotoArticle = (article) => {
-  return {
-    type: GOTO_ARTICLE,
-    article,
-  }
+export const GOTO_ARTICLE_VERSION = 'GOTO_ARTICLE_VERSION';
+export const gotoArticleVersion = (permlink, switchRoute) => {
+  return (dispatch) => {
+    switchRoute();
+    dispatch({
+      type: GOTO_ARTICLE_VERSION,
+      payload: {
+        permlink,
+      },
+    });
+  };
 };
+// export const gotoArticleVersion = (permlink) => {
+//   return {
+//     type: GOTO_ARTICLE_VERSION,
+//     payload: {
+//       permlink,
+//     },
+//   };
+// };
 
 
 export const ARTICLE_META_DATA_CHANGE = 'ARTICLE_META_DATA_CHANGE';

@@ -37,7 +37,8 @@ export const fetchArticles = async (tags = []) => {
     const queries = authors.map((author) => {
       return {
         select_authors: [author],
-        select_tags: [...tags, 'wiki'],
+        // select_tags: [...tags, 'wiki'],
+        select_tags: [...tags, 'wikidev'],        
         limit: 100
       }
     });

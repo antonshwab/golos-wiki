@@ -3,7 +3,7 @@ import * as B from 'reactstrap';
 import { connect } from 'react-redux';
 import { NavLink, withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { gotoArticle } from '../actions';
+import { gotoArticleVersion } from '../actions';
 
 class ArticleCard extends Component {
   constructor(props) {
@@ -13,8 +13,9 @@ class ArticleCard extends Component {
 
   onReadClick(e) {
     e.preventDefault();
-    const { gotoArticle, article } = this.props;
-    gotoArticle(article);
+    const { gotoArticleVersion, article } = this.props;
+    const { permlink } = article;
+    gotoArticleVersion(permlink);
   }
 
   render() {
@@ -49,11 +50,10 @@ ArticleCard.propTypes = {
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { history } = ownProps;
   return {
-    gotoArticle: (article) => {
-      dispatch(gotoArticle);
-      history.push(`/articles/${article.permlink}`);
+    gotoArticleVersion: (permlink) => {
+      const switchRoute = () => history.push(`/articles/${permlink}`);
+      dispatch(gotoArticleVersion(permlink, switchRoute));
     },
-
   };
 };
 

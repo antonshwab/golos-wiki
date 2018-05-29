@@ -16,7 +16,7 @@ import { AvBaseInput,
 import * as R from 'ramda';
 import golos from 'golos-js';
 import { makePostAsync } from '../helpers';
-import { articleMetaDataChange, articleContentChange } from '../actions';
+import { articleMetaDataChange, articleContentChange, gotoArticleVersion } from '../actions';
 import { Editor } from './Editor';
 
 class CreateArticle extends React.Component {
@@ -56,11 +56,13 @@ class CreateArticle extends React.Component {
     const body = this.props.content.slice(0, 15);
     const tags = R.values(this.props.tags);
     const metadata = {
-      tags: ['wiki', ...tags],
+      tags: ['wikidev', ...tags],
       articleContent: this.props.content,
     };
     const jsonMetadata = JSON.stringify(metadata);
 
+    const gotoArticleVersion = () => this.props.gotoArticleVersion(permlink);
+    
     this.props.submitArticle({
       parentAuthor,
       parentPermlink,
@@ -68,10 +70,9 @@ class CreateArticle extends React.Component {
       title,
       body,
       jsonMetadata
-    });
+    }, gotoArticleVersion);
 
-    // this.props.history.push(`/articles/${permlink}`);
-    
+    // this.props.gotoArticleVersion(permlink);
   }
 
   render() {
@@ -217,6 +218,7 @@ CreateArticle.propTypes = {
   onArticleMetaDataChange: PropTypes.func.isRequired,
   onArticleContentChange: PropTypes.func.isRequired,
   submitArticle: PropTypes.func.isRequired,
+  // gotoArticleVersion: PropTypes.func.isRequired,
 };
 
 
@@ -234,10 +236,14 @@ const mapStateToProps = (state, ownProps) => {
 
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { submitArticle } = ownProps ;
+  const { submitArticle, history } = ownProps ;
   return {
     onArticleMetaDataChange: (fieldId, data) => dispatch(articleMetaDataChange(fieldId, data)),
     onArticleContentChange: (content) => dispatch(articleContentChange(content)),
+    gotoArticleVersion: (permlink) => {
+      const switchRoute = () => history.push(`/articles/${permlink}`);
+      dispatch(gotoArticleVersion(permlink, switchRoute));
+    },
     submitArticle,
   };
 };

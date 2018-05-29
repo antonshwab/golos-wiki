@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as B from 'reactstrap';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import classnames from 'classnames';
 import { ReadArticle } from '../components/ReadArticle';
 import CrArticleVersion from './CrArticleVersion';
@@ -63,19 +64,21 @@ class Article extends Component {
 
           <B.TabPane tabId="read">
             <h1>READ article here!</h1>
-            {/* <ReadArticle 
-              article={this.props.article}
-            />         */}
+            <ReadArticle 
+              currentVersion={this.props.currentVersion}
+              versions={this.props.versions}
+            />        
           </B.TabPane>
 
           <B.TabPane tabId="edit">
-            <CrArticleVersion
-              article={this.props.article}
-            />
+            <h1>Create new article version here!</h1>
+            {/* <CrArticleVersion
+              baseOnVersion={this.props.currentVersion}
+            /> */}
           </B.TabPane>
 
           <B.TabPane tabId="viewHistory">
-            History of article
+            <h1>Article versions here</h1>
           </B.TabPane>
 
         </B.TabContent>
@@ -85,14 +88,17 @@ class Article extends Component {
 }
 
 Article.propTypes = {
-  article: PropTypes.object.isRequired,
-}
+  currentVersion: PropTypes.object.isRequired,
+  versions: PropTypes.array.isRequired,
+};
 
 const mapStateToProps = (state) => {
+  const { currentVersion, versions } = state.currentArticle;
   return {
-    article: state.currentArticle,
+    currentVersion: state.currentArticle,
+    versions
   };
 };
 
 
-export default connect(mapStateToProps)(Article);
+export default withRouter(connect(mapStateToProps)(Article));
