@@ -1,4 +1,5 @@
-import { LOAD_ARTICLES_REQUEST, LOAD_ARTICLES_SUCCESS, LOAD_ARTICLES_FAILURE, GOTO_ARTICLE, INIT_CREATION_NEW_ARTICLE, ARTICLE_META_DATA_CHANGE, ARTICLE_CONTENT_CHANGE, LOAD_CURRENT_ARTICLE_VERSIONS_REQUEST, LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS, LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE, GOTO_ARTICLE_VERSION } from '../actions';
+import { LOAD_ARTICLES_REQUEST, LOAD_ARTICLES_SUCCESS, LOAD_ARTICLES_FAILURE, GOTO_ARTICLE, INIT_CREATION_NEW_ARTICLE, ARTICLE_META_DATA_CHANGE, ARTICLE_CONTENT_CHANGE, LOAD_CURRENT_ARTICLE_VERSIONS_REQUEST, LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS, LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE, GOTO_ARTICLE_VERSION, PICKUP_ARTICLE_VERSION } from '../actions';
+import * as R from 'ramda';
 import { routerReducer, routerMiddleware } from 'react-router-redux';
 import { combineReducers } from 'redux';
 
@@ -66,12 +67,12 @@ const auth = (
   state = {
     // author: 'beesocial-test',
     // privateKey: '5JQNLbQxdLECxT7pi8DyTFoE4tL8fyyWAJ3QLa8Tdb85NRjiic7',
-    // author: 'beesocial-test2',
-    // privateKey: '5K5jsJr3mFaMT8NQ7F95UGP5zmsP8mVt4ZuW9trnBMBRBiEe38L',
+    author: 'beesocial-test2',
+    privateKey: '5K5jsJr3mFaMT8NQ7F95UGP5zmsP8mVt4ZuW9trnBMBRBiEe38L',
     // author: 'beesocial-test3',
     // privateKey: '5KMactRzn9QpoY9RdDDrjULfGxi5AK1KB7C8YxvsYRq7jS4BZQv',
-    author: 'beesocial-test4',
-    privateKey: '5JJpY93XKxkrfo1aFBU2sc3Xc7oVyiLyXqYRuG3DPWW7TZbMPVR'
+    // author: 'beesocial-test4',
+    // privateKey: '5JJpY93XKxkrfo1aFBU2sc3Xc7oVyiLyXqYRuG3DPWW7TZbMPVR'
   },
   action
 ) => {
@@ -108,9 +109,10 @@ const currentArticle = (
         isLoading: false,
         error
       };
-    case GOTO_ARTICLE_VERSION:
+    case PICKUP_ARTICLE_VERSION:
       const { permlink } = action.payload;
-      const currentVersion = state.currentArticle.versions.filter((v) => v.permlink === permlink);
+      const versions = state.versions;
+      const currentVersion = R.find((v) => v.permlink === permlink)(versions);
       console.log('reducer GOTO_ARTICLE_VERSION', 'state:', state, 'permlink: ', permlink, 'currentVersion: ', currentVersion);      
       return {
         ...state,

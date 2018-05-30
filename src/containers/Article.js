@@ -63,7 +63,6 @@ class Article extends Component {
         <B.TabContent activeTab={this.state.activeTab}>
 
           <B.TabPane tabId="read">
-            <h1>READ article here!</h1>
             <ReadArticle 
               currentVersion={this.props.currentVersion}
               versions={this.props.versions}
@@ -95,10 +94,9 @@ Article.propTypes = {
 const mapStateToProps = (state) => {
   const { currentVersion, versions } = state.currentArticle;
   return {
-    currentVersion: state.currentArticle,
+    currentVersion,
     versions
   };
 };
-
 
 export default withRouter(connect(mapStateToProps)(Article));

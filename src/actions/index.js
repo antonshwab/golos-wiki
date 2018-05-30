@@ -40,7 +40,7 @@ export const submitNewArticle = ({
   title,
   body,
   jsonMetadata  
-}, gotoArticleVersion) => {
+}) => {
   return async (dispatch, getState) => {
 
     try {
@@ -76,7 +76,7 @@ export const submitNewArticle = ({
       
       await wait(25000);
     
-      dispatch(submitArticleVersion({
+      await dispatch(submitArticleVersion({
         parentAuthor: author,
         parentPermlink: initPermlink,
         author,
@@ -84,7 +84,7 @@ export const submitNewArticle = ({
         title,
         body,
         jsonMetadata
-      }, gotoArticleVersion));
+      }));
 
     } catch(e) {
 
@@ -105,7 +105,7 @@ export const submitArticleVersion = ({
   title,
   body,
   jsonMetadata  
-}, gotoArticleVersion) => {
+}) => {
   return async (dispatch, getState) => {
 
     dispatch({ 
@@ -152,7 +152,7 @@ export const submitArticleVersion = ({
         } 
       });
 
-      await dispatch(loadArticeVersions(parentAuthor, parentPermlink, gotoArticleVersion));
+      await dispatch(loadArticeVersions(parentAuthor, parentPermlink));
 
     } catch(e) {
       dispatch({ 
@@ -167,7 +167,7 @@ export const LOAD_CURRENT_ARTICLE_VERSIONS_REQUEST = 'LOAD_CURRENT_ARTICLE_VERSI
 export const LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS = 'LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS';
 export const LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE = 'LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE';
 
-export const loadArticeVersions = (parent, parentPermlink, gotoArticleVersion) => {
+export const loadArticeVersions = (parent, parentPermlink) => {
   return async (dispatch) => {
     try {
       dispatch({ 
@@ -187,8 +187,6 @@ export const loadArticeVersions = (parent, parentPermlink, gotoArticleVersion) =
         }
       });
 
-      gotoArticleVersion();
-
     } catch(e) {
       dispatch({
         type: LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE,
@@ -200,28 +198,15 @@ export const loadArticeVersions = (parent, parentPermlink, gotoArticleVersion) =
 };
 
 
-// Article actions
-
-export const GOTO_ARTICLE_VERSION = 'GOTO_ARTICLE_VERSION';
-export const gotoArticleVersion = (permlink, switchRoute) => {
-  return (dispatch) => {
-    switchRoute();
-    dispatch({
-      type: GOTO_ARTICLE_VERSION,
-      payload: {
-        permlink,
-      },
-    });
+export const PICKUP_ARTICLE_VERSION = 'PICKUP_ARTICLE_VERSION';
+export const pickupArticleVersion = (permlink) => {
+  return {
+    type: PICKUP_ARTICLE_VERSION,
+    payload: {
+      permlink,
+    },
   };
 };
-// export const gotoArticleVersion = (permlink) => {
-//   return {
-//     type: GOTO_ARTICLE_VERSION,
-//     payload: {
-//       permlink,
-//     },
-//   };
-// };
 
 
 export const ARTICLE_META_DATA_CHANGE = 'ARTICLE_META_DATA_CHANGE';

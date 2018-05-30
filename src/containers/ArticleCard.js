@@ -3,20 +3,21 @@ import * as B from 'reactstrap';
 import { connect } from 'react-redux';
 import { NavLink, withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { gotoArticleVersion } from '../actions';
+import { push } from 'react-router-redux'
+import { pickupArticleVersion } from '../actions';
 
 class ArticleCard extends Component {
   constructor(props) {
     super(props);
-    this.onReadClick = this.onReadClick.bind(this);
+    // this.onReadClick = this.onReadClick.bind(this);
   }
 
-  onReadClick(e) {
-    e.preventDefault();
-    const { gotoArticleVersion, article } = this.props;
-    const { permlink } = article;
-    gotoArticleVersion(permlink);
-  }
+  // onReadClick(e) {
+  //   e.preventDefault();
+  //   const { article } = this.props;
+  //   const { permlink } = article;
+    
+  // }
 
   render() {
     const { title, author, body } = this.props.article;
@@ -33,7 +34,7 @@ class ArticleCard extends Component {
 
           <B.Button 
             color="primary" 
-            onClick={this.onReadClick}
+            onClick={this.props.onReadClick}
           >
             Read
           </B.Button>
@@ -48,14 +49,15 @@ ArticleCard.propTypes = {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { history } = ownProps;
   return {
-    gotoArticleVersion: (permlink) => {
-      const switchRoute = () => history.push(`/articles/${permlink}`);
-      dispatch(gotoArticleVersion(permlink, switchRoute));
-    },
+    onReadClick: async (event) => {
+      event.preventDefault();
+      const { article } = ownProps;
+      const { permlink } = article;
+      await dispatch(pickupArticleVersion(permlink));      
+      await dispatch(push(`articles/${permlink}`));
+    }
   };
 };
 
-
-export default withRouter(connect()(ArticleCard));
+export default withRouter(connect(null, mapDispatchToProps)(ArticleCard));

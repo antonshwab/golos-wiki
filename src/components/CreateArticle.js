@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 import CKEditor from "react-ckeditor-component";
 import * as B from 'reactstrap';
+import { push } from 'react-router-redux'
 import { Route, Switch, Link, NavLink, Redirect, withRouter } from 'react-router-dom';
 import { AvBaseInput,
   AvFeedback,
@@ -16,7 +17,7 @@ import { AvBaseInput,
 import * as R from 'ramda';
 import golos from 'golos-js';
 import { makePostAsync } from '../helpers';
-import { articleMetaDataChange, articleContentChange, gotoArticleVersion } from '../actions';
+import { articleMetaDataChange, articleContentChange, pickupArticleVersion } from '../actions';
 import { Editor } from './Editor';
 
 class CreateArticle extends React.Component {
@@ -60,8 +61,6 @@ class CreateArticle extends React.Component {
       articleContent: this.props.content,
     };
     const jsonMetadata = JSON.stringify(metadata);
-
-    const gotoArticleVersion = () => this.props.gotoArticleVersion(permlink);
     
     this.props.submitArticle({
       parentAuthor,
@@ -70,9 +69,7 @@ class CreateArticle extends React.Component {
       title,
       body,
       jsonMetadata
-    }, gotoArticleVersion);
-
-    // this.props.gotoArticleVersion(permlink);
+    });
   }
 
   render() {
@@ -218,7 +215,6 @@ CreateArticle.propTypes = {
   onArticleMetaDataChange: PropTypes.func.isRequired,
   onArticleContentChange: PropTypes.func.isRequired,
   submitArticle: PropTypes.func.isRequired,
-  // gotoArticleVersion: PropTypes.func.isRequired,
 };
 
 
@@ -236,15 +232,16 @@ const mapStateToProps = (state, ownProps) => {
 
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { submitArticle, history } = ownProps ;
+  const { submitArticle } = ownProps ;
   return {
     onArticleMetaDataChange: (fieldId, data) => dispatch(articleMetaDataChange(fieldId, data)),
     onArticleContentChange: (content) => dispatch(articleContentChange(content)),
-    gotoArticleVersion: (permlink) => {
-      const switchRoute = () => history.push(`/articles/${permlink}`);
-      dispatch(gotoArticleVersion(permlink, switchRoute));
+    submitArticle: async (data) => {
+      await submitArticle(data);
+      const { permlink } = data;
+      await dispatch(pickupArticleVersion(permlink));
+      await dispatch(push(permlink));
     },
-    submitArticle,
   };
 };
 

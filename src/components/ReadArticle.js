@@ -4,8 +4,12 @@ import * as B from 'reactstrap';
 
 
 export const ReadArticle = ({ currentVersion }) => {
+  if (!currentVersion) {
+    return (
+      <h1>Not found!</h1>
+    );
+  }
   const { title, author, json_metadata } = currentVersion;
-  console.log('json_metadata: ', json_metadata);
   const { articleContent } = JSON.parse(json_metadata);
   return (
     <B.Container>
