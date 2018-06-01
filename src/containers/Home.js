@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { loadArticles } from '../actions';
 import ArticlesBoard from '../components/ArticlesBoard';
+import { getArticleCardDatas } from '../selectors';
 
 class Home extends Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class Home extends Component {
   }
 
   render() {
-    const { articles, isLoading, error } = this.props;
+    const { cardDatas, isLoading, error } = this.props;
     if (error) {
       return (
         <b>{error.toString}</b>
@@ -30,7 +31,7 @@ class Home extends Component {
       <div>
         {/* <Explore /> */}
         <ArticlesBoard 
-          articles={ articles } 
+          cardDatas={ cardDatas } 
           isLoading={ isLoading }
         />
       </div>
@@ -40,7 +41,7 @@ class Home extends Component {
 
 Home.propTypes = {
   error: PropTypes.object,
-  articles: PropTypes.array.isRequired,
+  cardDatas: PropTypes.array.isRequired,
   isLoading: PropTypes.bool.isRequired,
   loadArticles: PropTypes.func.isRequired,
 };
@@ -52,12 +53,11 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const mapStateToProps = (state) => {
-  const { items, error, isLoading } = state.articles;
+  const { error, isLoading } = state.entities;
   return {
-    error: error,
-    articles: items,
+    error,
+    cardDatas: !isLoading && getArticleCardDatas(state),
     isLoading,
-    // isLoading: items === undefined,
   };
 };
 

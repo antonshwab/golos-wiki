@@ -6,33 +6,31 @@ import PropTypes from 'prop-types';
 import ArticleCard from '../containers/ArticleCard';
 
 
-class ArticlesBoard extends Component {
-  constructor(props) {
-    super(props);
-  }
-  
-  render() {
-    const { articles } = this.props;
+const ArticlesBoard = ({ cardDatas }) => {
 
-    if (!articles || articles.length === 0) {
-      return (<B.Container><h3>No articles</h3></B.Container>);
-    }
-  
-    const articleCards = articles.map((article, index) => {
-      return (<ArticleCard
-        key={ index }
-        article={ article }
-      />);
-    });
-  
-    const groupedBy3 = R.splitEvery(3, articleCards);
-    const wrappedToRows = groupedBy3.map((group, index) => <B.Row key={ index }>{ group }</B.Row>);
-    return (<B.Container>{ wrappedToRows }</B.Container>);
+  if (!cardDatas || cardDatas.length === 0) {
+    return (<B.Container><h3>No articles</h3></B.Container>);
   }
+
+  const articleCards = cardDatas.map((data, index) => {
+    return (<ArticleCard
+      key={ index }
+      data={ data }  
+    />);
+  });
+
+  const groupedBy3 = R.splitEvery(3, articleCards);
+  const wrappedToRows = groupedBy3.map((group, index) => <B.Row key={ index }>{ group }</B.Row>);
+  return (<B.Container>{ wrappedToRows }</B.Container>);
 }
 
 ArticlesBoard.propTypes = {
-  articles: PropTypes.array.isRequired,
+  cardDatas: PropTypes.arrayOf(PropTypes.shape({
+    mainVersionPermlink: PropTypes.string,
+    originPermlink: PropTypes.string,
+    title: PropTypes.string,
+    previewContent: PropTypes.string,
+  })).isRequired,
 };
 
 export default ArticlesBoard;

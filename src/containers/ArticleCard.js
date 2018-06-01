@@ -6,58 +6,49 @@ import PropTypes from 'prop-types';
 import { push } from 'react-router-redux'
 import { pickupArticleVersion } from '../actions';
 
-class ArticleCard extends Component {
-  constructor(props) {
-    super(props);
-    // this.onReadClick = this.onReadClick.bind(this);
-  }
+const ArticleCard = ({ data, onReadClick }) => {
+  const { title, previewContent } = data;
+  return (
+    <B.Col sm="4">
+      <B.Card body>
+        <B.CardTitle>
+          {title}
+        </B.CardTitle>
+        <B.CardText>
+          <B.Container dangerouslySetInnerHTML={{ __html: previewContent }}/>
+        </B.CardText>
 
-  // onReadClick(e) {
-  //   e.preventDefault();
-  //   const { article } = this.props;
-  //   const { permlink } = article;
-    
-  // }
+        <B.Button 
+          color="primary" 
+          onClick={onReadClick}
+        >
+          Read
+        </B.Button>
+      </B.Card>
+    </B.Col>
+  );
 
-  render() {
-    const { title, author, body } = this.props.article;
-
-    return (
-      <B.Col sm="4">
-        <B.Card body>
-          <B.CardTitle>
-            {title} by {author}
-          </B.CardTitle>
-          <B.CardText>
-            <div dangerouslySetInnerHTML={{__html: body.slice(0, 25)}}/>
-          </B.CardText>
-
-          <B.Button 
-            color="primary" 
-            onClick={this.props.onReadClick}
-          >
-            Read
-          </B.Button>
-        </B.Card>
-      </B.Col>
-    );
-  }
-}
+};
 
 ArticleCard.propTypes = {
-  article: PropTypes.object.isRequired,
+  onReadClick: PropTypes.func.isRequired,  
+  data: PropTypes.shape({
+    mainVersionPermlink: PropTypes.string,
+    originPermlink: PropTypes.string,
+    title: PropTypes.string,
+    previewContent: PropTypes.string,
+  }),
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onReadClick: async (event) => {
       event.preventDefault();
-      const { article } = ownProps;
-      const { permlink } = article;
-      await dispatch(pickupArticleVersion(permlink));      
-      await dispatch(push(`articles/${permlink}`));
+      const { originPermlink, versionPermlink } = ownProps.data;
+      // await dispatch(pickupArticleVersion(articlePermlink, articleVersionPermlink));
+      await dispatch(push(`articles/${originPermlink}/${versionPermlink}`));
     }
   };
 };
 
-export default withRouter(connect(null, mapDispatchToProps)(ArticleCard));
+export default connect(null, mapDispatchToProps)(ArticleCard);
