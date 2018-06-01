@@ -1,5 +1,7 @@
 import golos from 'golos-js';
-import { fetchArticles, broadcastComment, getDiscussionsByTrending, later, wait } from '../helpers';
+import { wait } from '../helpers';
+import { fetchArticles, broadcastComment, getDiscussionsByTrending } from '../api';
+
 
 export const LOAD_ARTICLES_REQUEST = 'LOAD_ARTICLES_REQUEST';
 export const LOAD_ARTICLES_SUCCESS = 'LOAD_ARTICLES_SUCCESS';
@@ -13,11 +15,13 @@ export const loadArticles = () => {
         type: LOAD_ARTICLES_REQUEST
       });
 
-      const response = await fetchArticles();
+      const { entities, result } = await fetchArticles();
+      const { origins, versions } = entities;
+      const payload = { origins, versions, result};
 
       dispatch({
         type: LOAD_ARTICLES_SUCCESS,
-        payload: response,
+        payload,
       });
 
     } catch(error) {
@@ -199,11 +203,12 @@ export const loadArticeVersions = (parent, parentPermlink) => {
 
 
 export const PICKUP_ARTICLE_VERSION = 'PICKUP_ARTICLE_VERSION';
-export const pickupArticleVersion = (permlink) => {
+export const pickupArticleVersion = (articlePermlink, articleVersionPermlink) => {
   return {
     type: PICKUP_ARTICLE_VERSION,
     payload: {
-      permlink,
+      articlePermlink,
+      articleVersionPermlink,
     },
   };
 };

@@ -6,11 +6,11 @@ import { combineReducers } from 'redux';
 
 const articles = (
   state = {
-    isLoading: false,
-    items: []  
+    isLoading: true,
   },
   action
 ) => {
+  const { payload } = action;
   switch (action.type) {
     case LOAD_ARTICLES_REQUEST:
       return {
@@ -18,10 +18,19 @@ const articles = (
         isLoading: true,
       };
     case LOAD_ARTICLES_SUCCESS:
+      const origins = {
+        allIds: payload.result,
+        byId: payload.origins,
+      };
+      const versions = {
+        allIds: R.values(payload.versions),        
+        byId: payload.versions,
+      };
       return {
         ...state,
         isLoading: false,
-        items: action.payload,
+        origins,
+        versions,
       };
     case LOAD_ARTICLES_FAILURE:
       return {
@@ -67,12 +76,12 @@ const auth = (
   state = {
     // author: 'beesocial-test',
     // privateKey: '5JQNLbQxdLECxT7pi8DyTFoE4tL8fyyWAJ3QLa8Tdb85NRjiic7',
-    author: 'beesocial-test2',
-    privateKey: '5K5jsJr3mFaMT8NQ7F95UGP5zmsP8mVt4ZuW9trnBMBRBiEe38L',
+    // author: 'beesocial-test2',
+    // privateKey: '5K5jsJr3mFaMT8NQ7F95UGP5zmsP8mVt4ZuW9trnBMBRBiEe38L',
     // author: 'beesocial-test3',
     // privateKey: '5KMactRzn9QpoY9RdDDrjULfGxi5AK1KB7C8YxvsYRq7jS4BZQv',
-    // author: 'beesocial-test4',
-    // privateKey: '5JJpY93XKxkrfo1aFBU2sc3Xc7oVyiLyXqYRuG3DPWW7TZbMPVR'
+    author: 'beesocial-test4',
+    privateKey: '5JJpY93XKxkrfo1aFBU2sc3Xc7oVyiLyXqYRuG3DPWW7TZbMPVR'
   },
   action
 ) => {
@@ -110,10 +119,10 @@ const currentArticle = (
         error
       };
     case PICKUP_ARTICLE_VERSION:
-      const { permlink } = action.payload;
+      const { articlePermlink, articleVersionPermlink } = action.payload;
       const versions = state.versions;
-      const currentVersion = R.find((v) => v.permlink === permlink)(versions);
-      console.log('reducer GOTO_ARTICLE_VERSION', 'state:', state, 'permlink: ', permlink, 'currentVersion: ', currentVersion);      
+      const currentVersion = R.find((v) => v.permlink === articleVersionPermlink)(versions);
+      // console.log('reducer GOTO_ARTICLE_VERSION', 'state:', state, 'permlink: ', permlink, 'currentVersion: ', currentVersion);      
       return {
         ...state,
         isLoading: false,
@@ -127,7 +136,7 @@ const currentArticle = (
 
 const rootReducer = combineReducers({
   auth,
-  articles,
+  entities: articles,
   currentArticle,
   articleCreation,
   router: routerReducer
