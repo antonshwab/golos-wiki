@@ -1,11 +1,8 @@
 import { createSelector } from 'reselect';
+import * as R from 'ramda';
 
-// const getOrigins = (state) => state.entities.origins;
-const getOrigins = (state) => {
-  console.log('getOrigins: ', state.entities);
-  return state.entities.origins;
-};
 
+const getOrigins = (state) => state.entities.origins;
 
 const getVersions = (state) => state.entities.versions;
 
@@ -22,7 +19,11 @@ const getVersions = (state) => state.entities.versions;
 export const getArticles = createSelector(
   [getOrigins, getVersions],
   (origins, versions) => {
-    console.log('getArticlesSelector: ', origins);
+
+    if (!origins || !versions) {
+      return [];
+    }
+
     return origins.allIds.map((id) => {
       const origin = origins.byId[id];
       const vs = origin.versions.map((vId) => versions.byId[vId]);
