@@ -62,7 +62,7 @@ export const submitNewArticle = ({
         author,
         permlink: initPermlink,
         title,
-        body: 'genesis',
+        body: 'article origin',
         jsonMetadata
       });
 
@@ -75,7 +75,7 @@ export const submitNewArticle = ({
       const { operations } = res;
       const [[, submittedResult ]] = operations;
       // const { author, body, json_metadata, parent_author, parent_permlink, permlink, title } = submittedResult;
-      console.log('Sumbitted result', submittedResult);
+      console.log('Submitted result', submittedResult);
       // const { parent_author, parent_permlink, } = submittedResult;
       
       await wait(25000);
@@ -156,7 +156,8 @@ export const submitArticleVersion = ({
         } 
       });
 
-      await dispatch(loadArticeVersions(parentAuthor, parentPermlink));
+      // await dispatch(loadArticeVersions(parentAuthor, parentPermlink));
+      await dispatch(loadArticles());
 
     } catch(e) {
       dispatch({ 
