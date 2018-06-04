@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import * as B from 'reactstrap';
+import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { push } from 'react-router-redux'
 import classnames from 'classnames';
 import { ReadArticle } from '../components/ReadArticle';
 import CrArticleVersion from './CrArticleVersion';
+import { getArticles } from '../selectors';
 
 class Article extends Component {
   constructor(props) {
@@ -26,6 +29,12 @@ class Article extends Component {
   }
 
   render() {
+
+    console.log('sdfasdf');
+
+    if (!this.props.isExist) {
+      return (<h1>Article not found</h1>);
+    }
 
     return (
       <B.Container>
@@ -51,8 +60,8 @@ class Article extends Component {
 
           <B.NavItem>
             <B.NavLink
-              className={classnames({ active: this.state.activeTab === 'viewHistory' })}
-              onClick={() => { this.toggle('viewHistory'); }}
+              className={classnames({ active: this.state.activeTab === 'versions' })}
+              onClick={() => { this.toggle('versions'); }}
             >
               Versions
             </B.NavLink>
@@ -65,7 +74,6 @@ class Article extends Component {
           <B.TabPane tabId="read">
             <ReadArticle 
               currentVersion={this.props.currentVersion}
-              versions={this.props.versions}
             />        
           </B.TabPane>
 
@@ -76,7 +84,7 @@ class Article extends Component {
             /> */}
           </B.TabPane>
 
-          <B.TabPane tabId="viewHistory">
+          <B.TabPane tabId="versions">
             <h1>Article versions here</h1>
           </B.TabPane>
 
@@ -89,14 +97,42 @@ class Article extends Component {
 Article.propTypes = {
   currentVersion: PropTypes.object.isRequired,
   versions: PropTypes.array.isRequired,
+  origin: PropTypes.object.isRequired,
+  isExist: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => {
-  const { currentVersion, versions } = state.currentArticle;
+  const { originPermlink, versionPermlink } = state.currentArticle;
+  const articles = getArticles(state);
+  
+  if (!originPermlink || !versionPermlink || !articles || articles.length === 0) {
+    return {
+      isExist: false,
+    };
+  }
+
+  const { origin, versions } = R.find((a) => a.origin.permlink === originPermlink)(articles);
+
+  if (!origin || !versions) {
+    return {
+      isExist: false,
+    };
+  }
+
+  const currentVersion = R.find((v) => v.permlink === versionPermlink)(versions);
+
+  if (!currentVersion) {
+    return {
+      isExist: false,
+    };
+  }
+
   return {
     currentVersion,
-    versions
+    origin,
+    versions,
+    isExist: true,  
   };
 };
 
-export default withRouter(connect(mapStateToProps)(Article));
+export default connect(mapStateToProps)(Article);

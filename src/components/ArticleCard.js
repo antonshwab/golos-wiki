@@ -3,6 +3,7 @@ import * as B from 'reactstrap';
 import { connect } from 'react-redux';
 import { NavLink, withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
+import * as R from 'ramda';
 import { push } from 'react-router-redux'
 import { pickupArticleVersion } from '../actions';
 
@@ -44,9 +45,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onReadClick: async (event) => {
       event.preventDefault();
-      const { originPermlink, versionPermlink } = ownProps.data;
+      const { originPermlink, mainVersionPermlink } = ownProps.data;
+      console.log('ownProps: ', ownProps);
       // await dispatch(pickupArticleVersion(articlePermlink, articleVersionPermlink));
-      await dispatch(push(`articles/${originPermlink}/${versionPermlink}`));
+      await dispatch(push(`articles/${originPermlink}/${mainVersionPermlink}`));
     }
   };
 };

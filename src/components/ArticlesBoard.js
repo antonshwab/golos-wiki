@@ -3,7 +3,7 @@ import * as B from 'reactstrap';
 import * as R from 'ramda';
 import PropTypes from 'prop-types';
 
-import ArticleCard from '../containers/ArticleCard';
+import ArticleCard from '../components/ArticleCard';
 
 
 const ArticlesBoard = ({ cardDatas }) => {

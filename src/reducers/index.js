@@ -94,7 +94,6 @@ const auth = (
 const currentArticle = (
   state = {
     isLoading: false,
-    versions: [],
   }, 
   action
 ) => {
@@ -118,15 +117,19 @@ const currentArticle = (
         isLoading: false,
         error
       };
-    case PICKUP_ARTICLE_VERSION:
-      const { articlePermlink, articleVersionPermlink } = action.payload;
-      const versions = state.versions;
-      const currentVersion = R.find((v) => v.permlink === articleVersionPermlink)(versions);
-      // console.log('reducer GOTO_ARTICLE_VERSION', 'state:', state, 'permlink: ', permlink, 'currentVersion: ', currentVersion);      
+    case '@@router/LOCATION_CHANGE':
+      const { pathname } = action.payload;
+      const pathParts = pathname.split('/');
+      const [ , articles, originPermlink, versionPermlink ] = pathParts;
+      if ( articles === 'articles' && originPermlink && versionPermlink ) {
+        return {
+          ...state,
+          originPermlink,
+          versionPermlink
+        };
+      }
       return {
         ...state,
-        isLoading: false,
-        currentVersion,
       };
     default:
       return state;

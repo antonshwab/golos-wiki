@@ -42,7 +42,7 @@ export const fetchArticles = async (tags = []) => {
       return {
         select_authors: [author],
         // select_tags: [...tags, 'wiki'],
-        select_tags: [...tags, 'wikidev'],        
+        select_tags: [...tags, 'wikidev1'],        
         limit: 100
       }
     });

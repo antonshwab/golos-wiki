@@ -16,7 +16,7 @@ export default ({ store , history }) => (
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path={'/articles/createNew'} component={CrNewArticle}/>          
-            <Route exact path={'/articles/:articleId'} component={Article} />
+            <Route exact path={'/articles/:articleOriginId/:articleVersionId'} component={Article} />
           </Switch>
         </div>  
       </ConnectedRouter>

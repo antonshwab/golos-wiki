@@ -57,7 +57,7 @@ class CreateArticle extends React.Component {
     const body = this.props.content.slice(0, 15);
     const tags = R.values(this.props.tags);
     const metadata = {
-      tags: ['wikidev', ...tags],
+      tags: ['wikidev1', ...tags],
       articleContent: this.props.content,
     };
     const jsonMetadata = JSON.stringify(metadata);
@@ -239,8 +239,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     submitArticle: async (data) => {
       await submitArticle(data);
       const { permlink } = data;
-      await dispatch(pickupArticleVersion(permlink));
-      await dispatch(push(permlink));
+      // await dispatch(pickupArticleVersion(permlink));
+      // await dispatch(push(permlink));
+      const originPermlink = `0-${permlink}`;
+      const versionPermlink = permlink;
+      await dispatch(push(`${originPermlink}/${versionPermlink}`));      
     },
   };
 };
