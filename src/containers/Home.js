@@ -56,7 +56,7 @@ const mapStateToProps = (state) => {
   const { error, isLoading } = state.entities;
   return {
     error,
-    cardDatas: !isLoading && getArticleCardDatas(state),
+    cardDatas: getArticleCardDatas(state),
     isLoading,
   };
 };

@@ -40,6 +40,9 @@ export const getArticles = createSelector(
 export const getArticleCardDatas = createSelector(
   [getArticles],
   (articles) => {
+    if (!articles) {
+      return [];
+    }
     return articles.map(({origin, versions}) => {
       // TODO proper choose of main version
       // workaround: choose 1st version
