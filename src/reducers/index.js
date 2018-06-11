@@ -1,8 +1,7 @@
-import { LOAD_ARTICLES_REQUEST, LOAD_ARTICLES_SUCCESS, LOAD_ARTICLES_FAILURE, GOTO_ARTICLE, INIT_CREATION_NEW_ARTICLE, ARTICLE_META_DATA_CHANGE, ARTICLE_CONTENT_CHANGE, LOAD_CURRENT_ARTICLE_VERSIONS_REQUEST, LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS, LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE, GOTO_ARTICLE_VERSION, PICKUP_ARTICLE_VERSION } from '../actions';
+import { LOAD_ARTICLES_REQUEST, LOAD_ARTICLES_SUCCESS, LOAD_ARTICLES_FAILURE, GOTO_ARTICLE, INIT_CREATION_NEW_ARTICLE, ARTICLE_META_DATA_CHANGE, ARTICLE_CONTENT_CHANGE, LOAD_CURRENT_ARTICLE_VERSIONS_REQUEST, LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS, LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE, GOTO_ARTICLE_VERSION, PICKUP_ARTICLE_VERSION, INIT_CREATION_ARTICLE_VERSION } from '../actions';
 import * as R from 'ramda';
-import { routerReducer, routerMiddleware } from 'react-router-redux';
 import { combineReducers } from 'redux';
-
+import { reducer as formReducer } from 'redux-form';
 
 const articles = (
   state = {
@@ -54,7 +53,27 @@ const articleCreation = (
 
   switch (action.type) {
     case INIT_CREATION_NEW_ARTICLE:
-      return state;
+      return {
+        ...state,
+      };
+    case INIT_CREATION_ARTICLE_VERSION:
+      const { title, category, json_metadata, } = action.payload;
+      const { tags, articleContent } = JSON.parse(json_metadata);
+
+      const tagsAsObj = tags.reduce((acc, tagValue, index) => {
+        const key = `tag${index}`;
+        const value = tagValue;
+        return { ...acc, [key]: value };
+      }, {}); 
+
+      return {
+        ...state,
+        title,
+        category,
+        content: articleContent,
+        tags: tagsAsObj,
+      };
+
     case ARTICLE_META_DATA_CHANGE:
       const { fieldId, data  } = action.payload;
       return {
@@ -118,7 +137,7 @@ const currentArticle = (
         error
       };
     case '@@router/LOCATION_CHANGE':
-      const { pathname } = action.payload;
+      const { pathname } = action.payload.location;
       const pathParts = pathname.split('/');
       const [ , articles, originPermlink, versionPermlink ] = pathParts;
       if ( articles === 'articles' && originPermlink && versionPermlink ) {
@@ -139,11 +158,10 @@ const currentArticle = (
 
 const rootReducer = combineReducers({
   auth,
+  form: formReducer,
   entities: articles,
   currentArticle,
   articleCreation,
-  router: routerReducer
 });
-
 
 export default rootReducer;

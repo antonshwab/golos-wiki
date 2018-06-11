@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import createHistory from 'history/createBrowserHistory';
-import { routerReducer, routerMiddleware } from 'react-router-redux';
+import { connectRouter, routerMiddleware } from 'connected-react-router';
 
 import rootReducer from '../reducers';
 
@@ -13,7 +13,7 @@ export const history = createHistory();
 
 export const configureStore = () => {
   return createStore(
-    rootReducer,
+    connectRouter(history)(rootReducer),
     applyMiddleware(
       thunkMiddleware,
       loggerMiddleware,

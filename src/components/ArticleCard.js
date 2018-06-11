@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import * as B from 'reactstrap';
 import { connect } from 'react-redux';
-import { NavLink, withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import * as R from 'ramda';
-import { push } from 'react-router-redux'
-import { pickupArticleVersion } from '../actions';
+import { push } from 'connected-react-router';
 
 const ArticleCard = ({ data, onReadClick }) => {
   const { title, previewContent } = data;
@@ -47,7 +44,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       event.preventDefault();
       const { originPermlink, mainVersionPermlink } = ownProps.data;
       console.log('ownProps: ', ownProps);
-      // await dispatch(pickupArticleVersion(articlePermlink, articleVersionPermlink));
       await dispatch(push(`articles/${originPermlink}/${mainVersionPermlink}`));
     }
   };
