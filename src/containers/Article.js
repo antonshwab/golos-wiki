@@ -3,11 +3,9 @@ import * as B from 'reactstrap';
 import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { push } from 'react-router-redux'
 import classnames from 'classnames';
 import { ReadArticle } from '../components/ReadArticle';
-import CrArticleVersion from './CrArticleVersion';
+import CreateNextArticleVersion from './CreateNextArticleVersion';
 import { getArticles } from '../selectors';
 
 class Article extends Component {
@@ -29,8 +27,6 @@ class Article extends Component {
   }
 
   render() {
-
-    console.log('sdfasdf');
 
     if (!this.props.isExist) {
       return (<h1>Article not found</h1>);
@@ -78,10 +74,9 @@ class Article extends Component {
           </B.TabPane>
 
           <B.TabPane tabId="edit">
-            <h1>Create new article version here!</h1>
-            {/* <CrArticleVersion
+            <CreateNextArticleVersion
               baseOnVersion={this.props.currentVersion}
-            /> */}
+            />
           </B.TabPane>
 
           <B.TabPane tabId="versions">
