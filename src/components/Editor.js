@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import CKEditor from "react-ckeditor-component";
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
-import * as B from 'reactstrap';
-import { editingArticle } from '../actions';
 
 export class Editor extends React.Component {
   constructor(props) {
@@ -11,9 +8,9 @@ export class Editor extends React.Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  onChange(e) {
-    const newContent = e.editor.getData();
-    this.props.updateContent(newContent);
+  onChange(evt) {
+    const newValue = evt.editor.getData();
+    this.props.onChange(newValue);
   }
 
   render() {
@@ -30,8 +27,8 @@ export class Editor extends React.Component {
 }
 
 Editor.propTypes = {
-  content: PropTypes.string.isRequired,
-  updateContent: PropTypes.func.isRequired,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
 }
 
 export default Editor;
