@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import golos from 'golos-js';
+// import golos from 'golos-js';
 import Root from './containers/Root'
 import { history, configureStore } from './store';
 

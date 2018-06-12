@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
-import classnames from 'classnames';
+import React from 'react';
 import * as B from 'reactstrap';
-
 
 export const ReadArticle = ({ currentVersion }) => {
   if (!currentVersion) {
@@ -9,7 +7,7 @@ export const ReadArticle = ({ currentVersion }) => {
       <h1>Not found!</h1>
     );
   }
-  const { title, author, json_metadata } = currentVersion;
+  const { title, json_metadata } = currentVersion;
   const { articleContent } = JSON.parse(json_metadata);
   return (
     <B.Container>

@@ -1,6 +1,4 @@
 import { createSelector } from 'reselect';
-import * as R from 'ramda';
-
 
 const getOrigins = (state) => state.entities.origins;
 

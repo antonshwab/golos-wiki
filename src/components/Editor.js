@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import CKEditor from "react-ckeditor-component";
 import PropTypes from 'prop-types';
 

@@ -7,9 +7,6 @@ import { articlesSchema } from './schema';
 export const broadcastComment = ({ privateKey, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata }) => {
   return new Promise((resolve, reject) => {
 
-    console.log('broadcastComment parentPermlink', parentPermlink);
-    
-
     golos.broadcast.comment(privateKey, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata, function(err, result) {
       if (!err) {
         resolve(result);
@@ -41,8 +38,7 @@ export const fetchArticles = async (tags = []) => {
     const queries = authors.map((author) => {
       return {
         select_authors: [author],
-        // select_tags: [...tags, 'wiki'],
-        select_tags: [...tags, 'wikidev1'],        
+        select_tags: [...tags, 'wikidev3'],        
         limit: 100
       }
     });
@@ -71,9 +67,6 @@ export const fetchArticles = async (tags = []) => {
     console.log('input: ', articles, 'normalizedOutput: ', normalizedArticles);    
 
     return normalizedArticles;
-
-    // return articles;
-
   } catch(e) {
     console.error('ERROR in FETCH ARTICLES: ', e);
     throw(e);

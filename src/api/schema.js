@@ -1,4 +1,4 @@
-import { normalize, schema } from 'normalizr';
+import { schema } from 'normalizr';
 
 const versionSchema = new schema.Entity('versions', {}, {
   idAttribute: v => v.permlink,

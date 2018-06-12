@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { submitNewArticle, submitArticleVersion } from '../actions';
+import { submitArticleVersion } from '../actions';
 import * as R from 'ramda';
 
 import { CreateNextArticleVersionComponent } from '../components/CreateArticleVersion';

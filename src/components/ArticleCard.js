@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import * as B from 'reactstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';

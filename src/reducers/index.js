@@ -1,7 +1,8 @@
-import { LOAD_ARTICLES_REQUEST, LOAD_ARTICLES_SUCCESS, LOAD_ARTICLES_FAILURE, GOTO_ARTICLE, INIT_CREATION_NEW_ARTICLE, ARTICLE_META_DATA_CHANGE, ARTICLE_CONTENT_CHANGE, LOAD_CURRENT_ARTICLE_VERSIONS_REQUEST, LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS, LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE, GOTO_ARTICLE_VERSION, PICKUP_ARTICLE_VERSION, INIT_CREATION_ARTICLE_VERSION } from '../actions';
 import * as R from 'ramda';
 import { combineReducers } from 'redux';
 import { reducer as formReducer } from 'redux-form';
+
+import * as types from '../actions/actionTypes';
 
 const articles = (
   state = {
@@ -11,12 +12,12 @@ const articles = (
 ) => {
   const { payload } = action;
   switch (action.type) {
-    case LOAD_ARTICLES_REQUEST:
+    case types.LOAD_ARTICLES_REQUEST:
       return {
         ...state, 
         isLoading: true,
       };
-    case LOAD_ARTICLES_SUCCESS:
+    case types.LOAD_ARTICLES_SUCCESS:
       const origins = {
         allIds: payload.result,
         byId: payload.origins,
@@ -31,60 +32,11 @@ const articles = (
         origins,
         versions,
       };
-    case LOAD_ARTICLES_FAILURE:
+    case types.LOAD_ARTICLES_FAILURE:
       return {
         ...state,
         isLoading: false,
         error: action,
-      };
-    default:
-      return state;
-  }
-};
-
-const articleCreation = (
-  state = {
-    title: '',
-    category: '',
-    tags: {},
-    content: '',
-  }, 
-  action) => {
-
-  switch (action.type) {
-    case INIT_CREATION_NEW_ARTICLE:
-      return {
-        ...state,
-      };
-    case INIT_CREATION_ARTICLE_VERSION:
-      const { title, category, json_metadata, } = action.payload;
-      const { tags, articleContent } = JSON.parse(json_metadata);
-
-      const tagsAsObj = tags.reduce((acc, tagValue, index) => {
-        const key = `tag${index}`;
-        const value = tagValue;
-        return { ...acc, [key]: value };
-      }, {}); 
-
-      return {
-        ...state,
-        title,
-        category,
-        content: articleContent,
-        tags: tagsAsObj,
-      };
-
-    case ARTICLE_META_DATA_CHANGE:
-      const { fieldId, data  } = action.payload;
-      return {
-        ...state,
-        [fieldId]: data
-      };
-    case ARTICLE_CONTENT_CHANGE:
-      const content = action.payload;
-      return {
-        ...state,
-        content
       };
     default:
       return state;
@@ -111,31 +63,10 @@ const auth = (
 };
 
 const currentArticle = (
-  state = {
-    isLoading: false,
-  }, 
+  state = {}, 
   action
 ) => {
   switch (action.type) {
-    case LOAD_CURRENT_ARTICLE_VERSIONS_REQUEST:
-      return {
-        ...state,
-        isLoading: true,
-      };
-    case LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS:
-      const { response } = action.payload;
-      return {
-        ...state,
-        isLoading: false,
-        versions: response
-      };
-    case LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE:
-      const { error } = action;
-      return {
-        ...state,
-        isLoading: false,
-        error
-      };
     case '@@router/LOCATION_CHANGE':
       const { pathname } = action.payload.location;
       const pathParts = pathname.split('/');
@@ -161,7 +92,6 @@ const rootReducer = combineReducers({
   form: formReducer,
   entities: articles,
   currentArticle,
-  articleCreation,
 });
 
 export default rootReducer;

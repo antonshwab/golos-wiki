@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import * as B from 'reactstrap';
 import * as R from 'ramda';
 import PropTypes from 'prop-types';

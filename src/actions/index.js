@@ -1,18 +1,14 @@
 import golos from 'golos-js';
 import { wait } from '../helpers';
-import { fetchArticles, broadcastComment, getDiscussionsByTrending } from '../api';
-
-
-export const LOAD_ARTICLES_REQUEST = 'LOAD_ARTICLES_REQUEST';
-export const LOAD_ARTICLES_SUCCESS = 'LOAD_ARTICLES_SUCCESS';
-export const LOAD_ARTICLES_FAILURE = 'LOAD_ARTICLES_FAILURE';
+import { fetchArticles, broadcastComment } from '../api';
+import * as types from './actionTypes';
 
 export const loadArticles = () => {
   return async (dispatch) => {
 
     try {
       dispatch({
-        type: LOAD_ARTICLES_REQUEST
+        type: types.LOAD_ARTICLES_REQUEST
       });
 
       const { entities, result } = await fetchArticles();
@@ -20,22 +16,18 @@ export const loadArticles = () => {
       const payload = { origins, versions, result};
 
       dispatch({
-        type: LOAD_ARTICLES_SUCCESS,
+        type: types.LOAD_ARTICLES_SUCCESS,
         payload,
       });
 
     } catch(error) {
       dispatch({
-        type: LOAD_ARTICLES_FAILURE,
+        type: types.LOAD_ARTICLES_FAILURE,
         error
       });
     }
   };
 };
-
-export const INIT_SUBMIT_NEW_ARTICLE_REQUEST = 'INIT_SUBMIT_NEW_ARTICLE_REQUEST';
-export const INIT_SUBMIT_NEW_ARTICLE_SUCCESS = 'INIT_SUBMIT_NEW_ARTICLE_SUCCESS';
-export const INIT_SUBMIT_NEW_ARTICLE_FAILURE = 'INIT_SUBMIT_NEW_ARTICLE_FAILURE';
 
 export const submitNewArticle = ({
   parentAuthor,
@@ -48,7 +40,7 @@ export const submitNewArticle = ({
   return async (dispatch, getState) => {
 
     try {
-      dispatch({ type: INIT_SUBMIT_NEW_ARTICLE_REQUEST });      
+      dispatch({ type: types.INIT_SUBMIT_NEW_ARTICLE_REQUEST });      
       const { privateKey, author } = getState().auth;      
 
       console.log('submitNewArticle parentPermlink', parentPermlink);
@@ -67,7 +59,7 @@ export const submitNewArticle = ({
       });
 
       dispatch({ 
-       type: INIT_SUBMIT_NEW_ARTICLE_SUCCESS,
+       type: types.INIT_SUBMIT_NEW_ARTICLE_SUCCESS,
        payload: res
       });
 
@@ -92,15 +84,12 @@ export const submitNewArticle = ({
 
     } catch(e) {
 
-      dispatch({ type: INIT_SUBMIT_NEW_ARTICLE_FAILURE, error: e });
+      dispatch({ type: types.INIT_SUBMIT_NEW_ARTICLE_FAILURE, error: e });
     }
   
   };
 };
 
-export const SUBMIT_ARTICLE_VERSION_REQUEST = 'SUBMIT_ARTICLE_VERSION_REQUEST';
-export const SUBMIT_ARTICLE_VERSION_SUCCESS = 'SUBMIT_ARTICLE_VERSION_SUCCESS';
-export const SUBMIT_ARTICLE_VERSION_FAILURE = 'SUBMIT_ARTICLE_VERSION_FAILURE';
 
 export const submitArticleVersion = ({
   parentAuthor,
@@ -113,7 +102,7 @@ export const submitArticleVersion = ({
   return async (dispatch, getState) => {
 
     dispatch({ 
-      type: SUBMIT_ARTICLE_VERSION_REQUEST,
+      type: types.SUBMIT_ARTICLE_VERSION_REQUEST,
       payload: {
         parentAuthor,
         parentPermlink,
@@ -150,33 +139,28 @@ export const submitArticleVersion = ({
       });
 
       await dispatch({ 
-        type: SUBMIT_ARTICLE_VERSION_SUCCESS, 
+        type: types.SUBMIT_ARTICLE_VERSION_SUCCESS, 
         payload: { 
           response 
         } 
       });
 
-      // await dispatch(loadArticeVersions(parentAuthor, parentPermlink));
       await dispatch(loadArticles());
 
     } catch(e) {
       dispatch({ 
-        type: SUBMIT_ARTICLE_VERSION_FAILURE, 
+        type: types.SUBMIT_ARTICLE_VERSION_FAILURE, 
         error: e
       });
     }
   };
 };
 
-export const LOAD_CURRENT_ARTICLE_VERSIONS_REQUEST = 'LOAD_CURRENT_ARTICLE_VERSIONS_REQUEST';
-export const LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS = 'LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS';
-export const LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE = 'LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE';
-
 export const loadArticeVersions = (parent, parentPermlink) => {
   return async (dispatch) => {
     try {
       dispatch({ 
-        type: LOAD_CURRENT_ARTICLE_VERSIONS_REQUEST, 
+        type: types.LOAD_CURRENT_ARTICLE_VERSIONS_REQUEST, 
         payload: {
           parent,
           parentPermlink
@@ -186,7 +170,7 @@ export const loadArticeVersions = (parent, parentPermlink) => {
       const response = await golos.api.getContentReplies(parent, parentPermlink);
 
       await dispatch({
-        type: LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS,
+        type: types.LOAD_CURRENT_ARTICLE_VERSIONS_SUCCESS,
         payload: {
           response, 
         }
@@ -194,7 +178,7 @@ export const loadArticeVersions = (parent, parentPermlink) => {
 
     } catch(e) {
       dispatch({
-        type: LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE,
+        type: types.LOAD_CURRENT_ARTICLE_VERSIONS_FAILURE,
         error: e
       });
     }
@@ -203,10 +187,9 @@ export const loadArticeVersions = (parent, parentPermlink) => {
 };
 
 
-export const PICKUP_ARTICLE_VERSION = 'PICKUP_ARTICLE_VERSION';
 export const pickupArticleVersion = (articlePermlink, articleVersionPermlink) => {
   return {
-    type: PICKUP_ARTICLE_VERSION,
+    type: types.PICKUP_ARTICLE_VERSION,
     payload: {
       articlePermlink,
       articleVersionPermlink,
@@ -215,10 +198,9 @@ export const pickupArticleVersion = (articlePermlink, articleVersionPermlink) =>
 };
 
 
-export const ARTICLE_META_DATA_CHANGE = 'ARTICLE_META_DATA_CHANGE';
 export const articleMetaDataChange = (fieldId, data) => {
   return {
-    type: ARTICLE_META_DATA_CHANGE,
+    type: types.ARTICLE_META_DATA_CHANGE,
     payload: {
       fieldId,
       data
@@ -227,27 +209,24 @@ export const articleMetaDataChange = (fieldId, data) => {
 };
 
 
-export const ARTICLE_CONTENT_CHANGE = 'ARTICLE_CONTENT_CHANGE';
 export const articleContentChange = (content) => {
   return {
-    type: ARTICLE_CONTENT_CHANGE,
+    type: types.ARTICLE_CONTENT_CHANGE,
     payload: content,
   };
 };
 
 
-export const INIT_CREATION_ARTICLE_VERSION = 'INIT_CREATION_ARTICLE_VERSION';
 export const initCreationArticleVersion = (article) => {
   return {
-    type: INIT_CREATION_ARTICLE_VERSION,
+    type: types.INIT_CREATION_ARTICLE_VERSION,
     payload: article,
   };
 };
 
-export const INIT_CREATION_NEW_ARTICLE = 'INIT_CREATION_NEW_ARTICLE';
 export const initCreationNewArticle = () => {
   return {
-    type: INIT_CREATION_NEW_ARTICLE,
+    type: types.INIT_CREATION_NEW_ARTICLE,
   };
 };
 

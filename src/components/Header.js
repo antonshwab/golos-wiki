@@ -1,6 +1,6 @@
 import React from 'react';
 import * as B from 'reactstrap';
-import { Route, Switch, Link, NavLink, Redirect } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 
 export default () => (

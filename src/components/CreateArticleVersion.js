@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import * as B from 'reactstrap';
-import * as R from 'ramda';
 import { Field, reduxForm } from 'redux-form';
 
 import Editor from './Editor';
