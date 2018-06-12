@@ -17,7 +17,7 @@ export class Editor extends React.Component {
     return (
       <CKEditor
         activeClass="p10"
-        content={this.props.content}
+        content={this.props.value}
         events={{
           "change": this.onChange,
         }}
