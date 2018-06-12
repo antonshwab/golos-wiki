@@ -43,7 +43,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onReadClick: async (event) => {
       event.preventDefault();
       const { originPermlink, mainVersionPermlink } = ownProps.data;
-      console.log('ownProps: ', ownProps);
       await dispatch(push(`articles/${originPermlink}/${mainVersionPermlink}`));
     }
   };

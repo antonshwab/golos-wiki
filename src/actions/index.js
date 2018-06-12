@@ -1,5 +1,5 @@
 import golos from 'golos-js';
-import { wait } from '../helpers';
+import { wait } from '../utils';
 import { fetchArticles, broadcastComment } from '../api';
 import * as types from './actionTypes';
 
@@ -43,16 +43,14 @@ export const submitNewArticle = ({
       dispatch({ type: types.INIT_SUBMIT_NEW_ARTICLE_REQUEST });      
       const { privateKey, author } = getState().auth;      
 
-      console.log('submitNewArticle parentPermlink', parentPermlink);
-
-      const initPermlink = `0-${permlink}`;
+      const originPermlink = `0-${permlink}`;
         
       const res = await broadcastComment({
         privateKey,
         parentAuthor,
         parentPermlink,
         author,
-        permlink: initPermlink,
+        permlink: originPermlink,
         title,
         body: 'article origin',
         jsonMetadata
@@ -63,18 +61,11 @@ export const submitNewArticle = ({
        payload: res
       });
 
-
-      const { operations } = res;
-      const [[, submittedResult ]] = operations;
-      // const { author, body, json_metadata, parent_author, parent_permlink, permlink, title } = submittedResult;
-      console.log('Submitted result', submittedResult);
-      // const { parent_author, parent_permlink, } = submittedResult;
-      
       await wait(25000);
     
       await dispatch(submitArticleVersion({
         parentAuthor: author,
-        parentPermlink: initPermlink,
+        parentPermlink: originPermlink,
         author,
         permlink,
         title,
@@ -116,17 +107,6 @@ export const submitArticleVersion = ({
     try {
       const { privateKey, author } = getState().auth;
     
-      console.log('submitArticleVersion : ', {
-        privateKey,
-        parentAuthor,
-        parentPermlink,
-        author,
-        permlink,
-        title,
-        body,
-        jsonMetadata
-      });
-
       const response = await broadcastComment({
         privateKey,
         parentAuthor,

@@ -63,9 +63,7 @@ export const fetchArticles = async (tags = []) => {
     }));
     
     const normalizedArticles = normalize(articles, articlesSchema);
-
-    console.log('input: ', articles, 'normalizedOutput: ', normalizedArticles);    
-
+    
     return normalizedArticles;
   } catch(e) {
     console.error('ERROR in FETCH ARTICLES: ', e);

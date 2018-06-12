@@ -8,8 +8,6 @@ import { CreateNextArticleVersionComponent } from '../components/CreateArticleVe
 
 
 const handleSubmit = (dispatch) => async (values) => {
-  console.log('values in handle submit from next version:', values);
-
   const { parentAuthor, parentPermlink, title, tags, content } = values;
 
   const permlink = makePermlinkFromTitle(title);
