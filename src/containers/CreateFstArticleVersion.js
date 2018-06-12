@@ -1,25 +1,12 @@
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import { submitNewArticle } from '../actions';
-import * as R from 'ramda';
 
+import { makePermlinkFromTitle, prepareTags } from '../utils';
 import { CreateFstArticleVersionComponent } from '../components/CreateArticleVersion';
 
 
-const makePermlinkFromTitle = (title) => {
-  const joined = title.toLowerCase().split(' ').join('-');
-  const withTimestamp = `${joined}-${Date.now()}`;
-  return withTimestamp;
-};
 
-const prepareTags = (tags) => {
-  const devTag = 'wikidev3';
-  const prepared = tags
-    .split(' ')
-    .filter((el) => el !== '' && el !== ' ');
-  const normalized = R.uniq([devTag, ...prepared]);
-  return normalized;
-};
 
 const handleSubmit = (dispatch) => async (values) => {
 

@@ -3,22 +3,9 @@ import { push } from 'connected-react-router';
 import { submitArticleVersion } from '../actions';
 import * as R from 'ramda';
 
+import { makePermlinkFromTitle, prepareTags } from '../utils';
 import { CreateNextArticleVersionComponent } from '../components/CreateArticleVersion';
 
-const makePermlinkFromTitle = (title) => {
-  const joined = title.toLowerCase().split(' ').join('-');
-  const withTimestamp = `${joined}-${Date.now()}`;
-  return withTimestamp;
-};
-
-const prepareTags = (tags) => {
-  const devTag = 'wikidev3';
-  const prepared = tags
-    .split(' ')
-    .filter((el) => el !== '' && el !== ' ');
-  const normalized = R.uniq([devTag, ...prepared]);
-  return normalized;
-};
 
 const handleSubmit = (dispatch) => async (values) => {
   console.log('values in handle submit from next version:', values);
@@ -50,7 +37,6 @@ const handleSubmit = (dispatch) => async (values) => {
 
 const mapStateToProps = (state, ownProps) => {
   const { baseOnVersion } = ownProps;
-  console.log(baseOnVersion);
   const { parent_author, parent_permlink, title, category, json_metadata, } = baseOnVersion;
   const { tags, articleContent } = JSON.parse(json_metadata);
 

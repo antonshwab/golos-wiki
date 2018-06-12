@@ -134,9 +134,9 @@ export const CreateArticleVersion = (props) => {
   );
 };
 
-export const lower = (value) => value && value.toLowerCase();
+const lower = (value) => value && value.toLowerCase();
 
-export const validate = (values) => {
+const validate = (values) => {
   const errors = {};
   const requiredFields = [
     'title',
