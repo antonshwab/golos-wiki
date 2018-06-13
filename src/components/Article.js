@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ReadArticle } from './ReadArticle';
 import CreateNextArticleVersion from '../containers/CreateNextArticleVersion';
+import VersionsList from './VersionsList';
 
 class Article extends Component {
   constructor(props) {
@@ -77,7 +78,9 @@ class Article extends Component {
           </B.TabPane>
 
           <B.TabPane tabId="versions">
-            <h1>Article versions here</h1>
+            <VersionsList 
+              versions={this.props.versions}
+            />
           </B.TabPane>
 
         </B.TabContent>
