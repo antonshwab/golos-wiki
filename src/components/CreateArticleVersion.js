@@ -164,5 +164,6 @@ export const CreateFstArticleVersionComponent = reduxForm({
 
 export const CreateNextArticleVersionComponent = reduxForm({
   form: 'createNextArticleVersion',
+  enableReinitialize: true,
   validate
 })(CreateArticleVersion);
