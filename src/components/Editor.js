@@ -14,6 +14,7 @@ export class Editor extends React.Component {
   }
 
   render() {
+    console.log('Editor value: ', this.props.value);
     return (
       <CKEditor
         activeClass="p10"
