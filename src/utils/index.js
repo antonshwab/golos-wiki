@@ -8,6 +8,12 @@ export const makePermlinkFromTitle = (title) => {
   return withTimestamp;
 };
 
+export const makeCommentPermlinkFromTitle = (title) => {
+  const joined = title.toLowerCase().split(' ').join('-');
+  const withTimestamp = `comment-${joined}-${Date.now()}`;
+  return withTimestamp;
+};
+
 export const prepareTags = (tags) => {
   const devTag = 'wikidev3';
   const prepared = tags
@@ -15,4 +21,9 @@ export const prepareTags = (tags) => {
     .filter((el) => el !== '' && el !== ' ');
   const normalized = R.uniq([devTag, ...prepared]);
   return normalized;
+};
+
+export const prepareTagsForComment = () => {
+  const devTag = 'wikidev3';
+  return [devTag, 'comment'];
 };

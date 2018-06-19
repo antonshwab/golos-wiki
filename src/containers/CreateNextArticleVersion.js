@@ -48,9 +48,6 @@ const mapStateToProps = (state, ownProps) => {
   };
 
   return {
-    pathname: state.router.location.pathname,
-    search: state.router.location.search,
-    hash: state.router.location.hash,
     initialValues,
   };
 };

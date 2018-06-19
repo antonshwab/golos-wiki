@@ -136,6 +136,60 @@ export const submitArticleVersion = ({
   };
 };
 
+export const submitComment = ({
+  parentAuthor,
+  parentPermlink,
+  permlink,
+  title,
+  body,
+  jsonMetadata  
+}) => {
+  return async (dispatch, getState) => {
+
+    dispatch({ 
+      type: types.SUBMIT_COMMENT_REQUEST,
+      payload: {
+        parentAuthor,
+        parentPermlink,
+        permlink,
+        title,
+        body,
+        jsonMetadata
+      },
+    });
+
+    try {
+      const { privateKey, author } = getState().auth;
+    
+      const response = await broadcastComment({
+        privateKey,
+        parentAuthor,
+        parentPermlink,
+        author,
+        permlink,
+        title,
+        body,
+        jsonMetadata
+      });
+
+      await dispatch({ 
+        type: types.SUBMIT_COMMENT_SUCCESS, 
+        payload: { 
+          response 
+        } 
+      });
+
+      await dispatch(loadArticles());
+
+    } catch(e) {
+      dispatch({ 
+        type: types.SUBMIT_COMMENT_FAILURE, 
+        error: e
+      });
+    }
+  };
+}; 
+
 export const loadArticeVersions = (parent, parentPermlink) => {
   return async (dispatch) => {
     try {
@@ -176,26 +230,6 @@ export const pickupArticleVersion = (articlePermlink, articleVersionPermlink) =>
     },
   };
 };
-
-
-export const articleMetaDataChange = (fieldId, data) => {
-  return {
-    type: types.ARTICLE_META_DATA_CHANGE,
-    payload: {
-      fieldId,
-      data
-    },
-  };
-};
-
-
-export const articleContentChange = (content) => {
-  return {
-    type: types.ARTICLE_CONTENT_CHANGE,
-    payload: content,
-  };
-};
-
 
 export const initCreationArticleVersion = (article) => {
   return {

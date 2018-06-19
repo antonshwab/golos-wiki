@@ -59,6 +59,13 @@ export const fetchArticles = async (tags = []) => {
         return !!articleContent;
       });
 
+      const versionsWithComments = await Promise.all(versions.map(async v => {
+        console.log('versionWitComments. Author and permlink: ', v.author, v.permlink);
+        return await golos.api.getContentReplies(v.author, v.permlink);
+      }));
+
+      console.log('versionWithComments: ', versionsWithComments);
+
       return { ...origin, versions };
     }));
     
