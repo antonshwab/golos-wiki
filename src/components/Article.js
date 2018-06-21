@@ -6,6 +6,7 @@ import { ReadArticle } from './ReadArticle';
 import CreateNextArticleVersion from '../containers/CreateNextArticleVersion';
 import VersionsList from './VersionsList';
 import CreateComment from '../containers/CreateComment';
+import Comments from '../components/Comments';
 
 class Article extends Component {
   constructor(props) {
@@ -94,6 +95,8 @@ class Article extends Component {
               parentPermlink={permlink}
               isShow={ this.state.showCreateComment }
             />
+
+            <Comments comments={this.props.currentVersion.comments}/>
             
           </B.TabPane>
 

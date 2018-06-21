@@ -2,6 +2,7 @@ import * as R from 'ramda';
 import golos from 'golos-js';
 import { normalize } from 'normalizr';
 import { articlesSchema } from './schema';
+import { devTag } from '../utils';
 
 
 export const broadcastComment = ({ privateKey, parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata }) => {
@@ -56,7 +57,7 @@ export const fetchArticles = async (tags = []) => {
     const queries = authors.map((author) => {
       return {
         select_authors: [author],
-        select_tags: [...tags, 'wikidev3'],        
+        select_tags: [...tags, devTag],        
         limit: 100
       }
     });
