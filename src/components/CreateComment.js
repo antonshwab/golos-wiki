@@ -145,5 +145,6 @@ const validate = (values) => {
 
 export default reduxForm({
   form: 'createComment',
+  enableReinitialize: true,
   validate
 })(CreateComment);

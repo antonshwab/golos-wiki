@@ -13,6 +13,8 @@ const mapStateToProps = (state, ownProps) => {
     isShow
   };
 
+  console.log('Initials values: ', initialValues);
+
   return {
     initialValues,
   };
