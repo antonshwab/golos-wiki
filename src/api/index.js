@@ -30,6 +30,24 @@ export const getDiscussionsByTrending = (query) => {
   });
 };
 
+const collectComments = async (author, permlink) => {
+  console.log('COLLECT comments.', 'Author: ', author, 'Permlink: ', permlink);
+  const rootComments = await golos.api.getContentReplies(author, permlink);
+  console.log('COLLECT comments.', 'Root Comments: ', rootComments );
+  if (rootComments.length === 0) {
+    return [];
+  }
+  return await Promise.all(rootComments.map(async (rootComment) => {
+    const subComments = await golos.api.getContentReplies(rootComment.author, rootComment.permlink);
+    console.log('COLLECT comments.', 'SUB Comments: ', subComments);
+    const subCommentsWithSubComments = await Promise.all(subComments.map(async (comment) => {
+      return [comment, await collectComments(comment.author, comment.permlink)];
+    }));
+    console.log('COLLECT comments.', 'subCommentsWithSubComments: ', subCommentsWithSubComments);            
+    return [ rootComment, subCommentsWithSubComments ];
+  }));
+};
+
 
 export const fetchArticles = async (tags = []) => {
   try {
@@ -59,14 +77,15 @@ export const fetchArticles = async (tags = []) => {
         return !!articleContent;
       });
 
-      const versionsWithComments = await Promise.all(versions.map(async v => {
-        console.log('versionWitComments. Author and permlink: ', v.author, v.permlink);
-        return await golos.api.getContentReplies(v.author, v.permlink);
+      const versionsWithComments = await Promise.all(versions.map(async version => {
+        const comments = await collectComments(version.author, version.permlink);
+        return {
+          ...version,
+          comments,
+        };
       }));
 
-      console.log('versionWithComments: ', versionsWithComments);
-
-      return { ...origin, versions };
+      return { ...origin, versions: versionsWithComments };
     }));
     
     const normalizedArticles = normalize(articles, articlesSchema);
