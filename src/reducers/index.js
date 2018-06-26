@@ -49,10 +49,10 @@ const auth = (
     // privateKey: '5JQNLbQxdLECxT7pi8DyTFoE4tL8fyyWAJ3QLa8Tdb85NRjiic7',
     // author: 'beesocial-test2',
     // privateKey: '5K5jsJr3mFaMT8NQ7F95UGP5zmsP8mVt4ZuW9trnBMBRBiEe38L',
-    // author: 'beesocial-test3',
-    // privateKey: '5KMactRzn9QpoY9RdDDrjULfGxi5AK1KB7C8YxvsYRq7jS4BZQv',
-    author: 'beesocial-test4',
-    privateKey: '5JJpY93XKxkrfo1aFBU2sc3Xc7oVyiLyXqYRuG3DPWW7TZbMPVR'
+    author: 'beesocial-test3',
+    privateKey: '5KMactRzn9QpoY9RdDDrjULfGxi5AK1KB7C8YxvsYRq7jS4BZQv',
+    // author: 'beesocial-test4',
+    // privateKey: '5JJpY93XKxkrfo1aFBU2sc3Xc7oVyiLyXqYRuG3DPWW7TZbMPVR'
   },
   action
 ) => {

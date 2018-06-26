@@ -1,7 +1,77 @@
 import golos from 'golos-js';
 import { wait } from '../utils';
-import { fetchArticles, broadcastComment } from '../api';
+import { fetchArticles, broadcastComment, broadcastVote } from '../api';
 import * as types from './actionTypes';
+
+export const voteUp = (authorVoteFor, permlinkVoteFor) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: types.VOTE_UP_START,
+      });
+
+      const { privateKey, author } = getState().auth;      
+
+      const weight = 10000;
+
+      const result = await broadcastVote({
+        privateKey,
+        voter: author,
+        author: authorVoteFor,
+        permlink: permlinkVoteFor,
+        weight, 
+      });
+
+      dispatch({
+        type: types.VOTE_UP_SUCCESS,
+        payload: result,
+      });
+
+      await dispatch(loadArticles());
+
+    } catch(error) {
+      dispatch({
+        type: types.VOTE_UP_FAILURE,
+        error,
+      });
+    }
+  };
+};
+
+export const voteDown = (authorVoteFor, permlinkVoteFor) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: types.VOTE_DOWN_START,
+      });
+
+      const { privateKey, author } = getState().auth;      
+
+      const weight = -10000;
+
+      const result = await broadcastVote({
+        privateKey,
+        voter: author,
+        author: authorVoteFor,
+        permlink: permlinkVoteFor,
+        weight, 
+      });
+
+      dispatch({
+        type: types.VOTE_DOWN_SUCCESS,
+        payload: result,
+      });
+
+      await dispatch(loadArticles());
+
+    } catch(error) {
+      dispatch({
+        type: types.VOTE_DOWN_FAILURE,
+        error,
+      });
+    }
+  };
+};
 
 export const loadArticles = () => {
   return async (dispatch) => {

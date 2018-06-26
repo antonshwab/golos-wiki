@@ -7,6 +7,7 @@ import CreateNextArticleVersion from '../containers/CreateNextArticleVersion';
 import VersionsList from './VersionsList';
 import CreateComment from '../containers/CreateComment';
 import Comments from '../components/Comments';
+import Voting from '../containers/Voting';
 
 class Article extends Component {
   constructor(props) {
@@ -36,7 +37,7 @@ class Article extends Component {
 
   render() {
 
-    const { author, permlink } = this.props.currentVersion;
+    const { author, permlink, net_votes } = this.props.currentVersion;
 
     if (!this.props.isExist) {
       return (<h1>Article not found</h1>);
@@ -80,6 +81,12 @@ class Article extends Component {
           <B.TabPane tabId="read">
             <ReadArticle
               currentVersion={this.props.currentVersion}
+            />
+
+            <Voting 
+              author={author}
+              permlink={permlink}
+              votesCount={net_votes}
             />
 
             <B.Button

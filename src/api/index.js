@@ -19,6 +19,19 @@ export const broadcastComment = ({ privateKey, parentAuthor, parentPermlink, aut
 };
 
 
+export const broadcastVote = ({ privateKey, voter, author, permlink, weight, }) => {
+  return new Promise((resolve, reject) => {
+    golos.broadcast.vote(privateKey, voter, author, permlink, weight, (err, result) => {
+      if (!err) {
+        resolve(result);
+      } else {
+        reject(err);
+      }
+    });
+  });
+};
+
+
 export const getDiscussionsByTrending = (query) => {
   return new Promise((resolve, reject) => {
     golos.api.getDiscussionsByTrending(query, function(error, response) {
