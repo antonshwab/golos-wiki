@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import * as R from 'ramda';
 
 const getOrigins = (state) => state.entities.origins;
 
@@ -25,10 +26,18 @@ export const getArticles = createSelector(
     return origins.allIds.map((id) => {
       const origin = origins.byId[id];
       const vs = origin.versions.map((vId) => versions.byId[vId]);
+      //
+      const countVotesSort = R.sortWith([R.descend(R.prop('net_votes'))]);
+      const [maxVotedVersion] = countVotesSort(vs);
+      // const mainVersion = {
+      //   author: maxVotedVersion.author,
+      //   permlink: maxVotedVersion.permlink,
+      // };
+      //
       return {
         origin,
         versions: vs,
-        // TODO: with comments
+        mainVersion: maxVotedVersion,
       };
     }); 
   }
@@ -41,18 +50,15 @@ export const getArticleCardDatas = createSelector(
     if (!articles) {
       return [];
     }
-    return articles.map(({origin, versions}) => {
-      // TODO proper choose of main version
-      // workaround: choose 1st version
-      const [mainVersion] = versions;
-      const title = mainVersion.title;
+    return articles.map(({origin, versions, mainVersion}) => {
+      
       const { articleContent } = JSON.parse(mainVersion.json_metadata);
-      // TODO getting previewContent without ugly html-tags
+      
       const previewContent = articleContent.slice(0, 20);
       return {
         originPermlink: origin.permlink,
         mainVersionPermlink: mainVersion.permlink,
-        title,
+        title: mainVersion.title,
         previewContent,
       };
     });
