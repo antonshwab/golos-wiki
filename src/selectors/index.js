@@ -50,6 +50,10 @@ export const getArticleCardDatas = createSelector(
     if (!articles) {
       return [];
     }
+<<<<<<< HEAD
+=======
+    console.log('!!!!!!! articles: ', articles);
+>>>>>>> 69929f8fce086b7dd7d981547f33746a6e6e9386
     return articles.map(({origin, versions, mainVersion}) => {
       
       const { articleContent } = JSON.parse(mainVersion.json_metadata);
