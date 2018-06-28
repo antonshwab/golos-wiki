@@ -56,7 +56,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onSubmit: handleSubmit(dispatch),
     isReadonly: (name) => {
-      if (R.contains(name, ['title', 'category', 'tags'])) {
+      if (R.contains(name, ['category', 'tags'])) {
         return 'readonly'
       } else {
         return null;
