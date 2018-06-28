@@ -21,6 +21,12 @@ class Article extends Component {
     };
   }
 
+  componentDidMount() {
+    if (!this.props.isExist) {
+      this.props.loadArticles();
+    }
+  }
+
   toggle(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
@@ -36,12 +42,16 @@ class Article extends Component {
   }
 
   render() {
-
-    const { author, permlink, net_votes } = this.props.currentVersion;
+    if (this.props.isLoading) {
+      return (<h1>Loading...</h1>);      
+    }
 
     if (!this.props.isExist) {
       return (<h1>Article not found</h1>);
     }
+
+    const { author, permlink, net_votes } = this.props.currentVersion;
+
 
     return (
       <B.Container>
@@ -130,6 +140,7 @@ Article.propTypes = {
   versions: PropTypes.array.isRequired,
   origin: PropTypes.object.isRequired,
   isExist: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 export default Article;

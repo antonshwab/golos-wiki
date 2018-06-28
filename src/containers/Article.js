@@ -1,14 +1,24 @@
 import * as R from 'ramda';
 import { connect } from 'react-redux';
-import { getArticles } from '../selectors';
 
+import { loadArticles } from '../actions';
+import { getArticles } from '../selectors';
 import ArticleComponent from '../components/Article';
 
 const mapStateToProps = (state) => {
-  const { originPermlink, versionPermlink } = state.currentArticle;
+  // const { originPermlink, versionPermlink } = state.currentArticle;
+  const { pathname } = state.router.location;
+  const [,,originPermlink, versionPermlink] = pathname.split('/');
+
   const articles = getArticles(state);
   
-  if (!originPermlink || !versionPermlink || !articles || articles.length === 0) {
+  if (!articles || articles.length === 0) {
+    return {
+      isLoading: true,
+    };
+  }
+
+  if (!originPermlink || !versionPermlink) {
     return {
       isExist: false,
     };
@@ -38,4 +48,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(ArticleComponent);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loadArticles: () => dispatch(loadArticles()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ArticleComponent);
