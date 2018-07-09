@@ -10,7 +10,7 @@
     "babel-eslint": "7.2.3",
     "babel-jest": "20.0.3",
     "babel-loader": "7.1.2",
-    "babel-preset-react-app": "^3.1.1",
+    "babel-preset-react-app": "^3.1.2",
     "babel-runtime": "6.26.0",
     "bootstrap": "^4.1.1",
     "case-sensitive-paths-webpack-plugin": "2.1.1",
@@ -30,7 +30,7 @@
     "file-loader": "1.1.5",
     "fs-extra": "3.0.1",
     "gh-pages": "^1.2.0",
-    "golos-js": "^0.7.1",
+    "golos-js": "^0.7.2",
     "history": "^4.7.2",
     "html-webpack-plugin": "2.29.0",
     "jest": "20.0.4",
@@ -47,11 +47,11 @@
     "react-ckeditor-component": "^1.0.7",
     "react-dev-utils": "^5.0.1",
     "react-dom": "^16.4.1",
-    "react-froala-wysiwyg": "^2.8.3",
+    "react-froala-wysiwyg": "^2.8.4",
     "react-redux": "^5.0.7",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "reactstrap": "^6.1.0",
+    "reactstrap": "^6.2.0",
     "redux": "^4.0.0",
     "redux-form": "^7.4.2",
     "redux-logger": "^3.0.6",
@@ -74,7 +74,7 @@
     "test": "node scripts/test.js --env=jsdom"
   },
   "devDependencies": {
-    "redux-devtools-extension": "^2.13.4"
+    "redux-devtools-extension": "^2.13.5"
   },
   "jest": {
     "collectCoverageFrom": [
